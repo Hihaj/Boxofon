@@ -7,7 +7,6 @@ using System.Web.Mvc;
 using Boxofon.Web.Filters;
 using Twilio.Mvc;
 using Twilio.TwiML;
-using Twilio.TwiML.Mvc;
 
 namespace Boxofon.Web.Controllers
 {
@@ -21,7 +20,16 @@ namespace Boxofon.Web.Controllers
             var response = new TwilioResponse();
             response.Say("Connecting you now.");
             response.Dial(WebConfigurationManager.AppSettings["MyPhoneNumber"]);
-            return new TwiMLResult(response);
+            return new ActionResults.TwiMLResult(response);
+        }
+
+        [HttpGet]
+        public ActionResult Incoming()
+        {
+            var response = new TwilioResponse();
+            response.Say("Connecting you now.");
+            response.Dial(WebConfigurationManager.AppSettings["MyPhoneNumber"]);
+            return new ActionResults.TwiMLResult(response);
         }
     }
 }
