@@ -25,14 +25,18 @@ namespace Boxofon.Web.Controllers
         public ActionResult Incoming(VoiceRequest request)
         {
             var response = new TwilioResponse();
+            if (request.From == WebConfigurationManager.AppSettings["MyPhoneNumber"])
+            {
+                response.Say("Välkommen!", new { language = "sv-SE" });
+            }
+
             if (_phoneNumberBlacklist != null && _phoneNumberBlacklist.Contains(request.From))
             {
-                response.Say("You are calling from a blacklisted number. Goodbye.");
+                response.Say("Du ringer från ett svartlistat nummer och kommer inte kopplas fram. Om du vill kan du lämna ett meddelande efter tonen.", new { language = "sv-SE" });
                 response.Hangup();
             }
             else
             {
-                response.Say("Connecting you now.");
                 response.Dial(WebConfigurationManager.AppSettings["MyPhoneNumber"]);
             }
             return new ActionResults.TwiMLResult(response);
