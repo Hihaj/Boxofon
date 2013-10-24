@@ -27,12 +27,12 @@ namespace Boxofon.Web.Controllers
             var response = new TwilioResponse();
             if (request.From == WebConfigurationManager.AppSettings["MyPhoneNumber"])
             {
-                response.Say("Välkommen!", new { language = "sv-SE" });
+                response.Say("Välkommen!", new { voice = "alice", language = "sv-SE" });
             }
 
             if (_phoneNumberBlacklist != null && _phoneNumberBlacklist.Contains(request.From))
             {
-                response.Say("Du ringer från ett svartlistat nummer och kommer inte kopplas fram. Om du vill kan du lämna ett meddelande efter tonen.", new { language = "sv-SE" });
+                response.Say("Du ringer från ett svartlistat nummer och kommer inte kopplas fram. Om du vill kan du lämna ett meddelande efter tonen.", new { voice = "alice", language = "sv-SE" });
                 response.Hangup();
             }
             else
