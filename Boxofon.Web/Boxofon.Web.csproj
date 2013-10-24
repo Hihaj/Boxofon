@@ -40,6 +40,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Ninject">
+      <HintPath>..\packages\Ninject.3.0.1.10\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Common">
+      <HintPath>..\packages\Ninject.Web.Common.3.0.0.7\lib\net45-full\Ninject.Web.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Mvc">
+      <HintPath>..\packages\Ninject.MVC3.3.0.0.6\lib\net45-full\Ninject.Web.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.104.3.3\lib\net4\RestSharp.dll</HintPath>
     </Reference>
@@ -118,14 +127,20 @@
     <Reference Include="Twilio.Twiml">
       <HintPath>..\packages\Twilio.TwiML.3.3.3\lib\3.5\Twilio.Twiml.dll</HintPath>
     </Reference>
+    <Reference Include="WebActivator">
+      <HintPath>..\packages\WebActivator.1.5.3\lib\net40\WebActivator.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="Controllers\VoiceController.cs" />
+    <Compile Include="FilePhoneNumberBlacklist.cs" />
     <Compile Include="Filters\RequireWebhookAuthKeyAttribute.cs" />
     <Compile Include="Filters\ValidateTwilioRequestAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="IPhoneNumberBlacklist.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ActionResults\TwiMLResult.cs" />
   </ItemGroup>
@@ -133,6 +148,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Content Include="App_Data\blacklist.txt" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -144,7 +160,6 @@
     <Content Include="Views\Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
