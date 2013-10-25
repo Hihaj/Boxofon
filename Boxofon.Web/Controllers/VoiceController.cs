@@ -82,5 +82,13 @@ namespace Boxofon.Web.Controllers
             response.Hangup();
             return new TwiMLResult(response);
         }
+
+        [RequireWebhookAuthKey]
+        [HttpPost]
+        [ValidateTwilioRequest]
+        public ActionResult Outgoing(VoiceRequest request)
+        {
+            return new ActionResults.TwiMLResult(new TwilioResponse());
+        }
     }
 }
