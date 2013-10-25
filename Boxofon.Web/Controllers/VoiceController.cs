@@ -26,29 +26,42 @@ namespace Boxofon.Web.Controllers
         public ActionResult Incoming(VoiceRequest request)
         {
             var response = new TwilioResponse();
-            if (request.From == WebConfigurationManager.AppSettings["MyPhoneNumber"])
+            response.Say("Du ringer från ett svartlistat nummer och kommer inte kopplas fram. Om du vill kan du lämna ett meddelande efter tonen.", new { voice = "alice", language = "sv-SE" });
+            response.Record(new
             {
-                response.Say("Välkommen!", new { voice = "alice", language = "sv-SE" });
-            }
-
-            if (_phoneNumberBlacklist != null && _phoneNumberBlacklist.Contains(request.From))
-            {
-                response.Say("Du ringer från ett svartlistat nummer och kommer inte kopplas fram. Om du vill kan du lämna ett meddelande efter tonen.", new { voice = "alice", language = "sv-SE" });
-                response.Record(new
-                {
-                    action = Url.Action("VoiceMail", "Voice", new { authKey = WebConfigurationManager.AppSettings["WebhookAuthKey"] }),
-                    method = "POST",
-                    timeout = 5,
-                    maxLength = 180,
-                    playBeep = true,
-                    finishOnKey = "#"
-                });
-            }
-            else
-            {
-                response.Dial(WebConfigurationManager.AppSettings["MyPhoneNumber"]);
-            }
+                action = Url.Action("VoiceMail", "Voice", new { authKey = WebConfigurationManager.AppSettings["WebhookAuthKey"] }),
+                method = "POST",
+                timeout = 5,
+                maxLength = 180,
+                playBeep = true,
+                finishOnKey = "#"
+            });
             return new TwiMLResult(response);
+            
+            //var response = new TwilioResponse();
+            //if (request.From == WebConfigurationManager.AppSettings["MyPhoneNumber"])
+            //{
+            //    response.Say("Välkommen!", new { voice = "alice", language = "sv-SE" });
+            //}
+
+            //if (_phoneNumberBlacklist != null && _phoneNumberBlacklist.Contains(request.From))
+            //{
+            //    response.Say("Du ringer från ett svartlistat nummer och kommer inte kopplas fram. Om du vill kan du lämna ett meddelande efter tonen.", new { voice = "alice", language = "sv-SE" });
+            //    response.Record(new
+            //    {
+            //        action = Url.Action("VoiceMail", "Voice", new { authKey = WebConfigurationManager.AppSettings["WebhookAuthKey"] }),
+            //        method = "POST",
+            //        timeout = 5,
+            //        maxLength = 180,
+            //        playBeep = true,
+            //        finishOnKey = "#"
+            //    });
+            //}
+            //else
+            //{
+            //    response.Dial(WebConfigurationManager.AppSettings["MyPhoneNumber"]);
+            //}
+            //return new TwiMLResult(response);
         }
 
         [RequireWebhookAuthKey]
