@@ -49,7 +49,7 @@ namespace Boxofon.Web.Controllers
                 response.EndGather();
             }
 
-            if (request.From == "+46727275610" || (_phoneNumberBlacklist != null && _phoneNumberBlacklist.Contains(request.From)))
+            if (_phoneNumberBlacklist != null && _phoneNumberBlacklist.Contains(request.From))
             {
                 try
                 {
