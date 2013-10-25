@@ -31,21 +31,15 @@ namespace Boxofon.Web.Controllers
             var response = new TwilioResponse();
             if (request.From == WebConfigurationManager.AppSettings["MyPhoneNumber"])
             {
-                if (!string.IsNullOrEmpty(request.Digits))
+                response.BeginGather(new
                 {
-
-                }
-                else
-                {
-                    response.Say("Välkommen! Skriv in det telefonnummer du vill ringa. Avsluta med fyrkant.", new { voice = "alice", language = "sv-SE" });
-                    response.Gather(new
-                    {
-                        action = Url.Action("Outgoing", "Voice", new { authKey = WebConfigurationManager.AppSettings["WebhookAuthKey"] }),
-                        method = "POST",
-                        timeout = 5,
-                        finishOnKey = "#"
-                    });
-                }
+                    action = Url.Action("Outgoing", "Voice", new { authKey = WebConfigurationManager.AppSettings["WebhookAuthKey"] }),
+                    method = "POST",
+                    timeout = 5,
+                    finishOnKey = "#"
+                });
+                response.Say("Välkommen! Skriv in det telefonnummer du vill ringa. Avsluta med fyrkant.", new { voice = "alice", language = "sv-SE" });
+                response.EndGather();
             }
 
             if (_phoneNumberBlacklist != null && _phoneNumberBlacklist.Contains(request.From))
@@ -102,22 +96,26 @@ namespace Boxofon.Web.Controllers
         [ValidateTwilioRequest]
         public ActionResult Outgoing(VoiceRequest request)
         {
+            string numberToCall = null;
             var response = new TwilioResponse();
             if (request.From == WebConfigurationManager.AppSettings["MyPhoneNumber"] &&
                 !string.IsNullOrEmpty(request.Digits))
+            {    
+                if (request.Digits.StartsWith("00"))
+                {
+                    numberToCall = "+" + request.Digits.Remove(0, 2);
+                }
+                else if (request.Digits.StartsWith("0"))
+                {
+                    numberToCall = "+46" + request.Digits.Remove(0, 1);
+                }
+            }
+            if (!string.IsNullOrEmpty(numberToCall))
             {
-                var numberToCall = request.Digits;
-
-                "https://api.mailgun.net/v2/{0}/messages"
-                    .Fmt(WebConfigurationManager.AppSettings["mailgun:Domain"])
-                    .PostToUrl(new
-                    {
-                        from = WebConfigurationManager.AppSettings["BoxofonNoreplyEmail"],
-                        to = WebConfigurationManager.AppSettings["MyEmail"],
-                        subject = string.Format("Utgående samtal till {0}", request.Digits),
-                        html = string.Format(@"Skulle ha ringt {0}.", request.Digits)
-                    },
-                    requestFilter: webRequest => { webRequest.Credentials = new NetworkCredential("api", WebConfigurationManager.AppSettings["mailgun:ApiKey"]); });
+                response.Dial(numberToCall, new
+                {
+                    callerId = request.To
+                });
             }
             else
             {
