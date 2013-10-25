@@ -31,7 +31,21 @@ namespace Boxofon.Web.Controllers
             var response = new TwilioResponse();
             if (request.From == WebConfigurationManager.AppSettings["MyPhoneNumber"])
             {
-                response.Say("Välkommen!", new { voice = "alice", language = "sv-SE" });
+                if (!string.IsNullOrEmpty(request.Digits))
+                {
+
+                }
+                else
+                {
+                    response.Say("Välkommen! Skriv in det telefonnummer du vill ringa. Avsluta med fyrkant.", new { voice = "alice", language = "sv-SE" });
+                    response.Gather(new
+                    {
+                        action = Url.Action("Outgoing", "Voice", new { authKey = WebConfigurationManager.AppSettings["WebhookAuthKey"] }),
+                        method = "POST",
+                        timeout = 5,
+                        finishOnKey = "#"
+                    });
+                }
             }
 
             if (_phoneNumberBlacklist != null && _phoneNumberBlacklist.Contains(request.From))
@@ -89,7 +103,26 @@ namespace Boxofon.Web.Controllers
         public ActionResult Outgoing(VoiceRequest request)
         {
             var response = new TwilioResponse();
-            response.Dial(WebConfigurationManager.AppSettings["MyPhoneNumber"]);
+            if (request.From == WebConfigurationManager.AppSettings["MyPhoneNumber"] &&
+                !string.IsNullOrEmpty(request.Digits))
+            {
+                var numberToCall = request.Digits;
+
+                "https://api.mailgun.net/v2/{0}/messages"
+                    .Fmt(WebConfigurationManager.AppSettings["mailgun:Domain"])
+                    .PostToUrl(new
+                    {
+                        from = WebConfigurationManager.AppSettings["BoxofonNoreplyEmail"],
+                        to = WebConfigurationManager.AppSettings["MyEmail"],
+                        subject = string.Format("Utgående samtal till {0}", request.Digits),
+                        html = string.Format(@"Skulle ha ringt {0}.", request.Digits)
+                    },
+                    requestFilter: webRequest => { webRequest.Credentials = new NetworkCredential("api", WebConfigurationManager.AppSettings["mailgun:ApiKey"]); });
+            }
+            else
+            {
+                response.Hangup();
+            }
             return new ActionResults.TwiMLResult(response);
         }
     }
