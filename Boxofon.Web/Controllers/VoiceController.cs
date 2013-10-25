@@ -79,8 +79,8 @@ namespace Boxofon.Web.Controllers
                     .Fmt(WebConfigurationManager.AppSettings["mailgun:Domain"])
                     .PostToUrl(new
                     {
-                        from = "noreply@boxofon.mailgun.org",
-                        to = "anders.fjeldstad@gmail.com",
+                        from = WebConfigurationManager.AppSettings["BoxofonNoreplyEmail"],
+                        to = WebConfigurationManager.AppSettings["MyEmail"],
                         subject = string.Format("Nytt röstmeddelande från {0}", request.From),
                         html = string.Format(@"Du har ett nytt röstmeddelande från {0}. <a href=""{1}.mp3"">Klicka här för att lyssna.</a>", request.From, request.RecordingUrl)
                     },
