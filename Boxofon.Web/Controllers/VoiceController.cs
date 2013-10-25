@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Boxofon.Web.Filters;
 using Twilio.Mvc;
 using Twilio.TwiML;
+using Twilio.TwiML.Mvc;
 
 namespace Boxofon.Web.Controllers
 {
@@ -33,13 +34,33 @@ namespace Boxofon.Web.Controllers
             if (_phoneNumberBlacklist != null && _phoneNumberBlacklist.Contains(request.From))
             {
                 response.Say("Du ringer från ett svartlistat nummer och kommer inte kopplas fram. Om du vill kan du lämna ett meddelande efter tonen.", new { voice = "alice", language = "sv-SE" });
-                response.Hangup();
+                response.Record(new
+                {
+                    action = Url.Action("VoiceMail", "Voice", new { authKey = WebConfigurationManager.AppSettings["WebhookAuthKey"] }),
+                    method = "POST",
+                    timeout = 5,
+                    maxLength = 180,
+                    playBeep = true,
+                    finishOnKey = "#"
+                });
             }
             else
             {
                 response.Dial(WebConfigurationManager.AppSettings["MyPhoneNumber"]);
             }
-            return new ActionResults.TwiMLResult(response);
+            return new TwiMLResult(response);
+        }
+
+        [RequireWebhookAuthKey]
+        [HttpPost]
+        [ValidateTwilioRequest]
+        public ActionResult VoiceMail(VoiceRequest request)
+        {
+            // TODO Send an e-mail to the user saying that there is a new voicemail.
+            var response = new TwilioResponse();
+            response.Say("Tack för ditt samtal.");
+            response.Hangup();
+            return new TwiMLResult(response);
         }
     }
 }
