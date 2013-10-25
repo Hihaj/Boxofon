@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Configuration;
 using System.Web.Mvc;
 using Boxofon.Web.Filters;
+using Boxofon.Web.Mailgun;
 using Boxofon.Web.Twilio;
 using ServiceStack.Text;
 using Twilio.Mvc;
@@ -17,10 +18,16 @@ namespace Boxofon.Web.Controllers
     public class VoiceController : Controller
     {
         private readonly IPhoneNumberBlacklist _phoneNumberBlacklist;
+        private readonly IMailgunRestClient _mailgun;
 
-        public VoiceController(IPhoneNumberBlacklist phoneNumberBlacklist)
+        public VoiceController(IPhoneNumberBlacklist phoneNumberBlacklist, IMailgunRestClient mailgun)
         {
             _phoneNumberBlacklist = phoneNumberBlacklist;
+            if (_mailgun == null)
+            {
+                throw new ArgumentNullException("mailgun");
+            }
+            _mailgun = mailgun;
         }
 
         [RequireWebhookAuthKey]
@@ -42,8 +49,21 @@ namespace Boxofon.Web.Controllers
                 response.EndGather();
             }
 
-            if (_phoneNumberBlacklist != null && _phoneNumberBlacklist.Contains(request.From))
+            if (request.From == "+46727275610" || (_phoneNumberBlacklist != null && _phoneNumberBlacklist.Contains(request.From)))
             {
+                try
+                {
+                    _mailgun.SendMessage(
+                        from: WebConfigurationManager.AppSettings["BoxofonNoreplyEmail"],
+                        to: WebConfigurationManager.AppSettings["MyEmail"],
+                        subject: string.Format("Blockerat samtal från {0}", request.From),
+                        htmlBody: string.Format(@"Din Boxofon blockerade just ett samtal från <a href=""http://vemringde.se/?q={0}"">{1}</a>.", HttpUtility.UrlEncode(request.From), request.From));
+                }
+                catch (Exception ex)
+                {
+                    // TODO Handle error (log?) - see https://github.com/ServiceStack/ServiceStack/wiki/Http-Utils#exception-handling
+                }
+
                 response.Say("Du ringer från ett svartlistat nummer och kommer inte kopplas fram. Om du vill kan du lämna ett meddelande efter tonen.", new { voice = "alice", language = "sv-SE" });
                 response.Record(new
                 {
@@ -69,16 +89,11 @@ namespace Boxofon.Web.Controllers
         {
             try
             {
-                "https://api.mailgun.net/v2/{0}/messages"
-                    .Fmt(WebConfigurationManager.AppSettings["mailgun:Domain"])
-                    .PostToUrl(new
-                    {
-                        from = WebConfigurationManager.AppSettings["BoxofonNoreplyEmail"],
-                        to = WebConfigurationManager.AppSettings["MyEmail"],
-                        subject = string.Format("Nytt röstmeddelande från {0}", request.From),
-                        html = string.Format(@"Du har ett nytt röstmeddelande från {0}. <a href=""{1}.mp3"">Klicka här för att lyssna.</a>", request.From, request.RecordingUrl)
-                    },
-                    requestFilter: webRequest => { webRequest.Credentials = new NetworkCredential("api", WebConfigurationManager.AppSettings["mailgun:ApiKey"]); });
+                _mailgun.SendMessage(
+                    from: WebConfigurationManager.AppSettings["BoxofonNoreplyEmail"],
+                    to: WebConfigurationManager.AppSettings["MyEmail"],
+                    subject: string.Format("Nytt röstmeddelande från {0}", request.From),
+                    htmlBody: string.Format(@"Du har ett nytt röstmeddelande från {0}. <a href=""{1}.mp3"">Klicka här för att lyssna.</a>", request.From, request.RecordingUrl));
             }
             catch (Exception ex)
             {

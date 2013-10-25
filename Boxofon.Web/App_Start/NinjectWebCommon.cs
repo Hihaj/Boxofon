@@ -1,4 +1,5 @@
 using System.Reflection;
+using Boxofon.Web.Mailgun;
 
 [assembly: WebActivator.PreApplicationStartMethod(typeof(Boxofon.Web.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(Boxofon.Web.App_Start.NinjectWebCommon), "Stop")]
@@ -56,6 +57,7 @@ namespace Boxofon.Web.App_Start
         private static void RegisterServices(IKernel kernel)
         {
             kernel.Bind<IPhoneNumberBlacklist>().To<FilePhoneNumberBlacklist>();
+            kernel.Bind<IMailgunRestClient>().To<MailgunRestClient>();
         }        
     }
 }
