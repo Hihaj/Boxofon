@@ -23,7 +23,7 @@ namespace Boxofon.Web.Controllers
         public VoiceController(IPhoneNumberBlacklist phoneNumberBlacklist, IMailgunRestClient mailgun)
         {
             _phoneNumberBlacklist = phoneNumberBlacklist;
-            if (_mailgun == null)
+            if (mailgun == null)
             {
                 throw new ArgumentNullException("mailgun");
             }
