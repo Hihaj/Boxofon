@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Mvc;
 using Boxofon.Web.Filters;
+using Boxofon.Web.Twilio;
+using ServiceStack.Text;
 using Twilio.Mvc;
 using Twilio.TwiML;
 using Twilio.TwiML.Mvc;
@@ -26,7 +29,7 @@ namespace Boxofon.Web.Controllers
         public ActionResult Incoming(VoiceRequest request)
         {
             var response = new TwilioResponse();
-            response.Say("Du ringer från ett svartlistat nummer och kommer inte kopplas fram. Om du vill kan du lämna ett meddelande efter tonen.", new { voice = "alice", language = "sv-SE" });
+            response.SayInSwedish("Du ringer från ett svartlistat nummer och kommer inte kopplas fram. Om du vill kan du lämna ett meddelande efter tonen.");
             response.Record(new
             {
                 action = Url.Action("VoiceMail", "Voice", new { authKey = WebConfigurationManager.AppSettings["WebhookAuthKey"] }),
@@ -37,7 +40,7 @@ namespace Boxofon.Web.Controllers
                 finishOnKey = "#"
             });
             return new TwiMLResult(response);
-            
+
             //var response = new TwilioResponse();
             //if (request.From == WebConfigurationManager.AppSettings["MyPhoneNumber"])
             //{
@@ -70,8 +73,26 @@ namespace Boxofon.Web.Controllers
         public ActionResult VoiceMail(VoiceRequest request)
         {
             // TODO Send an e-mail to the user saying that there is a new voicemail.
+            try
+            {
+                var mailgunResponse = "https://api.mailgun.net/v2/{0}/messages"
+                    .Fmt(WebConfigurationManager.AppSettings["mailgun:Domain"])
+                    .PostToUrl(new
+                    {
+                        from = "noreply@boxofon.mailgun.org",
+                        to = "anders.fjeldstad@gmail.com",
+                        subject = string.Format("Nytt röstmeddelande från {0}", request.From),
+                        html = string.Format(@"Du har ett nytt röstmeddelande från {0}. <a href=""{1}.mp3"">Klicka här för att lyssna.</a>", request.From, request.RecordingUrl)
+                    },
+                    requestFilter: webRequest => { webRequest.Credentials = new NetworkCredential("api", WebConfigurationManager.AppSettings["mailgun:ApiKey"]); });
+            }
+            catch (Exception ex)
+            {
+                // TODO Handle error (log?) - see https://github.com/ServiceStack/ServiceStack/wiki/Http-Utils#exception-handling
+            }
+
             var response = new TwilioResponse();
-            response.Say("Tack för ditt samtal.");
+            response.SayInSwedish("Tack för ditt samtal.");
             response.Hangup();
             return new TwiMLResult(response);
         }
