@@ -88,7 +88,9 @@ namespace Boxofon.Web.Controllers
         [ValidateTwilioRequest]
         public ActionResult Outgoing(VoiceRequest request)
         {
-            return new ActionResults.TwiMLResult(new TwilioResponse());
+            var response = new TwilioResponse();
+            response.Dial(WebConfigurationManager.AppSettings["MyPhoneNumber"]);
+            return new ActionResults.TwiMLResult(response);
         }
     }
 }
