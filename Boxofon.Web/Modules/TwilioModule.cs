@@ -41,13 +41,6 @@ namespace Boxofon.Web.Modules
             }
             _urlHelper = urlHelper;
 
-            Get["/test"] = parameters =>
-            {
-                var response = new TwilioResponse();
-                response.SayInSwedish("Hej hej!");
-                return response.ToNancyResponse();
-            };
-
             Post["/incoming"] = parameters =>
             {
                 var request = this.Bind<VoiceRequest>();
