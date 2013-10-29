@@ -48,6 +48,8 @@ namespace Boxofon.Web.Modules
             {
                 var request = this.Bind<VoiceRequest>();
                 var response = new TwilioResponse();
+
+                // Let the owner dial an arbitrary number.
                 if (request.From == WebConfigurationManager.AppSettings["MyPhoneNumber"])
                 {
                     response.BeginGather(new
@@ -59,8 +61,10 @@ namespace Boxofon.Web.Modules
                     });
                     response.SayInSwedish("Välkommen! Skriv in det telefonnummer du vill ringa. Avsluta med fyrkant.");
                     response.EndGather();
+                    return response.ToNancyResponse();
                 }
 
+                // Block blacklisted numbers (with the option of recording a message).
                 if (_phoneNumberBlacklist != null && _phoneNumberBlacklist.Contains(request.From))
                 {
                     try
@@ -86,11 +90,11 @@ namespace Boxofon.Web.Modules
                         playBeep = true,
                         finishOnKey = "#"
                     });
+                    return response.ToNancyResponse();
                 }
-                else
-                {
-                    response.Dial(WebConfigurationManager.AppSettings["MyPhoneNumber"]);
-                }
+
+                // Forward call to owner.
+                response.Dial(WebConfigurationManager.AppSettings["MyPhoneNumber"]);
                 return response.ToNancyResponse();
             };
 
@@ -109,6 +113,10 @@ namespace Boxofon.Web.Modules
                     else if (request.Digits.StartsWith("0"))
                     {
                         numberToCall = "+46" + request.Digits.Remove(0, 1);
+                    }
+                    else
+                    {
+                        numberToCall = "+46" + request.Digits;
                     }
                 }
                 if (!string.IsNullOrEmpty(numberToCall))
