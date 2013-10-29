@@ -25,9 +25,9 @@ namespace Boxofon.Web.Modules
             this.RequiresWebhookAuthKey();
 
             // Verify that the request is done by Twilio.
-            //Before += ctx => (new Boxofon.Web.Twilio.RequestValidator()).IsValidRequest(ctx, WebConfigurationManager.AppSettings["twilio:AuthToken"]) ?
-            //                     null :
-            //                     new Response { StatusCode = HttpStatusCode.Unauthorized };
+            Before += ctx => (new Boxofon.Web.Twilio.RequestValidator()).IsValidRequest(ctx, WebConfigurationManager.AppSettings["twilio:AuthToken"]) ?
+                                 null :
+                                 new Response { StatusCode = HttpStatusCode.Unauthorized };
 
             _phoneNumberBlacklist = phoneNumberBlacklist;
             if (mailgun == null)
