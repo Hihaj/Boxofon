@@ -18,7 +18,7 @@ namespace Boxofon.Web.Twilio
                            response.ToXDocument();
             return new Nancy.Response
             {
-                ContentType = "application/xml",
+                ContentType = "application/xml; charset=utf-8",
                 StatusCode = HttpStatusCode.OK,
                 Contents = stream => data.Save(stream)
             };
