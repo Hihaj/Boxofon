@@ -16,7 +16,7 @@ namespace Boxofon.Web.Helpers
             {
                 Path = path
             };
-            return url.ToString();
+            return url.Uri.AbsoluteUri;
         }
 
         public string GetAbsoluteUrl(string path, IDictionary<string, string> queryParameters)
@@ -34,7 +34,7 @@ namespace Boxofon.Web.Helpers
                 }
                 url.Query = query.ToString();
             }
-            return url.ToString();
+            return url.Uri.AbsoluteUri;
         }
     }
 }

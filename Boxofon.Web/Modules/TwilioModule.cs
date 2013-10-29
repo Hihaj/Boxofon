@@ -5,6 +5,7 @@ using Boxofon.Web.Helpers;
 using Boxofon.Web.Mailgun;
 using Boxofon.Web.Security;
 using Boxofon.Web.Twilio;
+using NLog;
 using Nancy;
 using Nancy.Helpers;
 using Nancy.ModelBinding;
@@ -15,6 +16,8 @@ namespace Boxofon.Web.Modules
 {
     public class TwilioModule : NancyModule
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly IPhoneNumberBlacklist _phoneNumberBlacklist;
         private readonly IMailgunRestClient _mailgun;
         private readonly IUrlHelper _urlHelper;
