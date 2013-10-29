@@ -40,7 +40,7 @@ namespace Boxofon.Web.Twilio
             // http://www.twilio.com/docs/security-reliability/security
             // Take the full URL of the request, from the protocol (http...) through the end of the query string (everything after the ?)
             var value = new StringBuilder();
-            var fullUrl = string.IsNullOrEmpty(urlOverride) ? context.Request.Url.ToString() : urlOverride;
+            var fullUrl = string.IsNullOrEmpty(urlOverride) ? ((Uri)context.Request.Url).AbsoluteUri : urlOverride;
             Logger.Debug("fullUrl: {0}", fullUrl);
             value.Append(fullUrl);
 
@@ -58,6 +58,7 @@ namespace Boxofon.Web.Twilio
                 }
             }
             Logger.Debug("Before hash: {0}", value.ToString());
+            Logger.Debug("Auth token: {0}...{1}", authToken.Substring(0, 4), authToken.Substring(authToken.Length - 4, 4));
             // Sign the resulting value with HMAC-SHA1 using your AuthToken as the key (remember, your AuthToken's case matters!).
             var sha1 = new HMACSHA1(Encoding.UTF8.GetBytes(authToken));
             var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(value.ToString()));
