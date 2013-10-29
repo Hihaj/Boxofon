@@ -107,6 +107,7 @@
   <ItemGroup>
     <Compile Include="BoxofonBootstrapper.cs" />
     <Compile Include="FilePhoneNumberBlacklist.cs" />
+    <Compile Include="Helpers\DictionaryExtensions.cs" />
     <Compile Include="Helpers\IUrlHelper.cs" />
     <Compile Include="Helpers\UrlHelper.cs" />
     <Compile Include="IPhoneNumberBlacklist.cs" />
