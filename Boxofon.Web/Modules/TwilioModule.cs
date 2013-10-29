@@ -49,12 +49,12 @@ namespace Boxofon.Web.Modules
                 {
                     response.BeginGather(new
                     {
-                        action = _urlHelper.GetAbsoluteUrl("/twilio/outgoing", new Dictionary<string, string>() { {"authKey", WebConfigurationManager.AppSettings["WebhookAuthKey"] } }),
+                        action = _urlHelper.GetAbsoluteUrl("/twilio/outgoing", new Dictionary<string, string>() { { "authKey", WebConfigurationManager.AppSettings["boxofon:WebhookAuthKey"] } }),
                         method = "POST",
                         timeout = 5,
                         finishOnKey = "#"
                     });
-                    response.Say("Välkommen! Skriv in det telefonnummer du vill ringa. Avsluta med fyrkant.", new { voice = "alice", language = "sv-SE" });
+                    response.SayInSwedish("Välkommen! Skriv in det telefonnummer du vill ringa. Avsluta med fyrkant.");
                     response.EndGather();
                 }
 
@@ -73,10 +73,10 @@ namespace Boxofon.Web.Modules
                         // TODO Handle error (log?) - see https://github.com/ServiceStack/ServiceStack/wiki/Http-Utils#exception-handling
                     }
 
-                    response.Say("Du ringer från ett svartlistat nummer och kommer inte kopplas fram. Om du vill kan du lämna ett meddelande efter tonen.", new { voice = "alice", language = "sv-SE" });
+                    response.SayInSwedish("Du ringer från ett svartlistat nummer och kommer inte kopplas fram. Om du vill kan du lämna ett meddelande efter tonen.");
                     response.Record(new
                     {
-                        action = _urlHelper.GetAbsoluteUrl("/twilio/voicemail", new Dictionary<string, string>() { { "authKey", WebConfigurationManager.AppSettings["WebhookAuthKey"] } }),
+                        action = _urlHelper.GetAbsoluteUrl("/twilio/voicemail", new Dictionary<string, string>() { { "authKey", WebConfigurationManager.AppSettings["boxofon:WebhookAuthKey"] } }),
                         method = "POST",
                         timeout = 5,
                         maxLength = 180,

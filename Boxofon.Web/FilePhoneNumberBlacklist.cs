@@ -19,7 +19,7 @@ namespace Boxofon.Web
             {
                 throw new ArgumentNullException("rootPathProvider");
             }
-            _phoneNumbers = new HashSet<string>(File.ReadAllLines(Path.Combine(rootPathProvider.GetRootPath(), "App_Data\blacklist.txt"), Encoding.UTF8)
+            _phoneNumbers = new HashSet<string>(File.ReadAllLines(Path.Combine(rootPathProvider.GetRootPath(), @"App_Data\blacklist.txt"), Encoding.UTF8)
                                                     .Select(line => line.Trim())
                                                     .Where(line => !string.IsNullOrEmpty(line)));
         }
