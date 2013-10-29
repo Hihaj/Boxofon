@@ -49,7 +49,7 @@ namespace Boxofon.Web.Twilio
                 foreach (var key in sortedKeys)
                 {
                     value.Append(key);
-                    value.Append(context.Request.Form[key]);
+                    value.Append((string)context.Request.Form[key]);
                 }
             }
 
