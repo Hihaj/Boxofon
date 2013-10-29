@@ -1,4 +1,6 @@
-﻿using System.Xml.Linq;
+﻿using System.Text;
+using System.Xml;
+using System.Xml.Linq;
 using Nancy;
 using Twilio.TwiML;
 
@@ -20,7 +22,13 @@ namespace Boxofon.Web.Twilio
             {
                 ContentType = "application/xml; charset=utf-8",
                 StatusCode = HttpStatusCode.OK,
-                Contents = stream => data.Save(stream)
+                Contents = stream =>
+                {
+                    using (var writer = new XmlTextWriter(stream, new UTF8Encoding(false)))
+                    {
+                        data.Save(writer);
+                    }
+                }
             };
         }
     }
