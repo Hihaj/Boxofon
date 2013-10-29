@@ -2,12 +2,15 @@
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using NLog;
 using Nancy;
 
 namespace Boxofon.Web.Twilio
 {
     public class RequestValidator
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Performs request validation using the current HTTP context passed in manually or from
         /// the ASP.NET MVC ValidateRequestAttribute
@@ -38,7 +41,7 @@ namespace Boxofon.Web.Twilio
             // Take the full URL of the request, from the protocol (http...) through the end of the query string (everything after the ?)
             var value = new StringBuilder();
             var fullUrl = string.IsNullOrEmpty(urlOverride) ? context.Request.Url.ToString() : urlOverride;
-
+            Logger.Debug("fullUrl: {0}", fullUrl);
             value.Append(fullUrl);
 
             // If the request is a POST, take all of the POST parameters and sort them alphabetically.
@@ -48,11 +51,13 @@ namespace Boxofon.Web.Twilio
                 var sortedKeys = ((DynamicDictionary)context.Request.Form).Keys.OrderBy(k => k, StringComparer.Ordinal).ToList();
                 foreach (var key in sortedKeys)
                 {
+                    Logger.Debug("key: {0}", key);
+                    Logger.Debug("value: {0}", (string)context.Request.Form[key]);
                     value.Append(key);
                     value.Append((string)context.Request.Form[key]);
                 }
             }
-
+            Logger.Debug("Before hash: {0}", value.ToString());
             // Sign the resulting value with HMAC-SHA1 using your AuthToken as the key (remember, your AuthToken's case matters!).
             var sha1 = new HMACSHA1(Encoding.UTF8.GetBytes(authToken));
             var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(value.ToString()));
@@ -62,7 +67,8 @@ namespace Boxofon.Web.Twilio
 
             // Compare your hash to ours, submitted in the X-Twilio-Signature header. If they match, then you're good to go.
             var sig = context.Request.Headers["X-Twilio-Signature"].FirstOrDefault();
-
+            Logger.Debug("Signature: {0}", sig);
+            Logger.Debug("Computed:  {0}", encoded);
             return sig == encoded;
         } 
     }
