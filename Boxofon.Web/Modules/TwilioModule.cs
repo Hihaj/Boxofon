@@ -22,7 +22,7 @@ namespace Boxofon.Web.Modules
         public TwilioModule(IPhoneNumberBlacklist phoneNumberBlacklist, IMailgunRestClient mailgun, IUrlHelper urlHelper)
             : base("/twilio")
         {
-            //this.RequiresWebhookAuthKey();
+            this.RequiresWebhookAuthKey();
 
             // Verify that the request is done by Twilio.
             //Before += ctx => (new Boxofon.Web.Twilio.RequestValidator()).IsValidRequest(ctx, WebConfigurationManager.AppSettings["twilio:AuthToken"]) ?
