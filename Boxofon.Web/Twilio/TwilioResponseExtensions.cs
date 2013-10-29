@@ -18,6 +18,7 @@ namespace Boxofon.Web.Twilio
             var data = response == null ?
                            new XDocument(new XElement("Response")) :
                            response.ToXDocument();
+            data.Declaration = new XDeclaration("1.0", "utf-8", null);
             return new Nancy.Response
             {
                 ContentType = "application/xml; charset=utf-8",
