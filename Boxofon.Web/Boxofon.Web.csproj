@@ -126,6 +126,8 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Secret.template.config" />
+    <Content Include="Views\Home\Default.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

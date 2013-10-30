@@ -9,7 +9,7 @@ namespace Boxofon.Web.Modules
         {
             this.RequiresHttps(redirect: true, httpsPort: 44300);
 
-            Get["/"] = parameters => "Boxofon";
+            Get["/"] = parameters => View["Default.cshtml"];
         }
     }
 }
