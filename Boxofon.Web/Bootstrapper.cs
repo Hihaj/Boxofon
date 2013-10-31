@@ -1,4 +1,7 @@
-﻿using System.Web.Configuration;
+﻿using System;
+using System.Linq;
+using System.Web.Configuration;
+using Boxofon.Web.Security;
 using NLog;
 using Nancy;
 using Nancy.Authentication.Forms;
@@ -40,6 +43,14 @@ namespace Boxofon.Web
                 // TODO Configure cryptography!
             };
             FormsAuthentication.Enable(pipelines, formsAuthConfiguration);
+            
+            pipelines.AfterRequest.AddItemToEndOfPipeline(context =>
+            {
+                if (context.Items.ContainsKey(SecurityHooks.ForceHttpStatusCodeKey))
+                {
+                    context.Response = new Response { StatusCode = (HttpStatusCode)context.Items[SecurityHooks.ForceHttpStatusCodeKey] };
+                }
+            });
         }
     }
 }

@@ -47,12 +47,7 @@ namespace Boxofon.Web.Modules
             
             this.RequiresHttps();
             this.RequiresWebhookAuthKey();
-
-            // Verify that the request is done by Twilio.
-            Before.AddItemToEndOfPipeline(ctx =>
-                                          (new Boxofon.Web.Twilio.RequestValidator()).IsValidRequest(ctx, WebConfigurationManager.AppSettings["twilio:AuthToken"]) ?
-                                              null :
-                                              new Response { StatusCode = HttpStatusCode.Unauthorized });
+            this.RequiresValidTwilioSignature();
 
             Post["/incoming"] = parameters =>
             {

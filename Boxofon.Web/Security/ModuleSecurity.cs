@@ -7,7 +7,12 @@ namespace Boxofon.Web.Security
     {
         public static void RequiresWebhookAuthKey(this INancyModule module)
         {
-            module.AddBeforeHookOrExecute(SecurityHooks.RequiresWebhookAuthKey(), "Requires webhook auth key");
+            module.AddBeforeHookOrExecute(SecurityHooks.RequiresWebhookAuthKey(), "Requires webhook auth key.");
+        }
+
+        public static void RequiresValidTwilioSignature(this INancyModule module)
+        {
+            module.AddBeforeHookOrExecute(SecurityHooks.RequiresValidTwilioSignature(), "Requires valid Twilio signature.");
         }
     }
 }
