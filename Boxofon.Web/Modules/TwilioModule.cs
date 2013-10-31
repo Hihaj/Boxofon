@@ -9,6 +9,7 @@ using NLog;
 using Nancy;
 using Nancy.Helpers;
 using Nancy.ModelBinding;
+using Nancy.Security;
 using Twilio.Mvc;
 using Twilio.TwiML;
 
@@ -25,6 +26,7 @@ namespace Boxofon.Web.Modules
         public TwilioModule(IPhoneNumberBlacklist phoneNumberBlacklist, IMailgunRestClient mailgun, IUrlHelper urlHelper)
             : base("/twilio")
         {
+            this.RequiresHttps();
             this.RequiresWebhookAuthKey();
 
             // Verify that the request is done by Twilio.

@@ -55,12 +55,18 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Nancy.0.21.1\lib\net40\Nancy.dll</HintPath>
     </Reference>
+    <Reference Include="Nancy.Authentication.Forms">
+      <HintPath>..\packages\Nancy.Authentication.Forms.0.21.1\lib\net40\Nancy.Authentication.Forms.dll</HintPath>
+    </Reference>
     <Reference Include="Nancy.Hosting.Aspnet, Version=0.17.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Nancy.Hosting.Aspnet.0.17.1\lib\net40\Nancy.Hosting.Aspnet.dll</HintPath>
     </Reference>
     <Reference Include="Nancy.Serialization.ServiceStack">
       <HintPath>..\packages\Nancy.Serialization.ServiceStack.0.21.1\lib\net40\Nancy.Serialization.ServiceStack.dll</HintPath>
+    </Reference>
+    <Reference Include="Nancy.SimpleAuthentication">
+      <HintPath>..\packages\Nancy.SimpleAuthentication.0.3.7\lib\net40\Nancy.SimpleAuthentication.dll</HintPath>
     </Reference>
     <Reference Include="Nancy.ViewEngines.Razor, Version=0.21.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -74,6 +80,9 @@
     </Reference>
     <Reference Include="ServiceStack.Text">
       <HintPath>..\packages\ServiceStack.Text.3.9.69\lib\net35\ServiceStack.Text.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleAuthentication.Core">
+      <HintPath>..\packages\SimpleAuthentication.Core.0.3.7\lib\net40\SimpleAuthentication.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -101,20 +110,33 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\blacklist.txt" />
+    <Content Include="Views\Account\Overview.cshtml" />
+    <None Include="Views\AuthenticateCallback.cshtml" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BoxofonBootstrapper.cs" />
+    <Compile Include="Bootstrapper.cs" />
     <Compile Include="FilePhoneNumberBlacklist.cs" />
     <Compile Include="Helpers\DictionaryExtensions.cs" />
+    <Compile Include="Helpers\HtmlHelperExtensions.cs" />
     <Compile Include="Helpers\IUrlHelper.cs" />
+    <Compile Include="Helpers\NancyExtensions.cs" />
+    <Compile Include="Helpers\SessionExtensions.cs" />
     <Compile Include="Helpers\UrlHelper.cs" />
+    <Compile Include="Infrastructure\AlertMessageStore.cs" />
     <Compile Include="IPhoneNumberBlacklist.cs" />
     <Compile Include="Mailgun\IMailgunRestClient.cs" />
     <Compile Include="Mailgun\MailgunRestClient.cs" />
+    <Compile Include="Membership\InMemoryUserRepository.cs" />
+    <Compile Include="Membership\IUserRepository.cs" />
+    <Compile Include="Membership\User.cs" />
+    <Compile Include="Membership\UserMapper.cs" />
+    <Compile Include="Modules\AccountModule.cs" />
+    <Compile Include="Modules\WebsiteBaseModule.cs" />
     <Compile Include="Modules\HomeModule.cs" />
     <Compile Include="Modules\TwilioModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\AuthenticationCallbackProvider.cs" />
     <Compile Include="Security\ModuleSecurity.cs" />
     <Compile Include="Security\SecurityHooks.cs" />
     <Compile Include="Twilio\RequestValidator.cs" />
@@ -128,6 +150,7 @@
     <Content Include="Secret.template.config" />
     <Content Include="Views\Home\Default.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Home\SignIn.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

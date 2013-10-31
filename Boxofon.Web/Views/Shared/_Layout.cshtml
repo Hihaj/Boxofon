@@ -1,10 +1,13 @@
-﻿<!DOCTYPE html>
+﻿@using Boxofon.Web.Helpers
+
+<!DOCTYPE html>
 <html>
 <head>
     <title>Boxofon</title>
     <meta charset="utf-8"/>
 </head>
     <body>
+        @Html.AlertMessages()
         @RenderBody()
     </body>
 </html>

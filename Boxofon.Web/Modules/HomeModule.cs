@@ -1,15 +1,17 @@
-﻿using Nancy;
+﻿using Boxofon.Web.Helpers;
+using Nancy;
 using Nancy.Security;
+using Nancy.Authentication.Forms;
 
 namespace Boxofon.Web.Modules
 {
-    public class HomeModule : NancyModule
+    public class HomeModule : WebsiteBaseModule
     {
         public HomeModule()
         {
-            this.RequiresHttps(redirect: true, httpsPort: 44300);
-
             Get["/"] = parameters => View["Default.cshtml"];
+            Get["/account/signin"] = parameters => View["SignIn.cshtml"];
+            Get["/account/signout"] = parameters => this.LogoutAndRedirect("~/");
         }
     }
 }
