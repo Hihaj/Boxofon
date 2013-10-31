@@ -3,3 +3,11 @@
 }
 
 <h1>Account</h1>
+@if (Model.IsTwilioAccountConnected)
+{
+    <span>Twilio-konto anslutet</span>
+}
+else
+{
+    <a href="@Model.TwilioConnectAuthorizationUrl">Anslut Twilio-konto</a>
+}

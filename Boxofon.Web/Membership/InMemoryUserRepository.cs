@@ -30,6 +30,7 @@ namespace Boxofon.Web.Membership
                 if (existingUser != null)
                 {
                     existingUser.Email = user.Email;
+                    existingUser.TwilioAccountSid = user.TwilioAccountSid;
                     // TODO Update provider identitites
                 }
                 else

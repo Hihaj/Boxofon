@@ -30,9 +30,10 @@ namespace Boxofon.Web.Modules
             this.RequiresWebhookAuthKey();
 
             // Verify that the request is done by Twilio.
-            Before += ctx => (new Boxofon.Web.Twilio.RequestValidator()).IsValidRequest(ctx, WebConfigurationManager.AppSettings["twilio:AuthToken"]) ?
-                                 null :
-                                 new Response { StatusCode = HttpStatusCode.Unauthorized };
+            Before.AddItemToEndOfPipeline(ctx =>
+                                          (new Boxofon.Web.Twilio.RequestValidator()).IsValidRequest(ctx, WebConfigurationManager.AppSettings["twilio:AuthToken"]) ?
+                                              null :
+                                              new Response { StatusCode = HttpStatusCode.Unauthorized });
 
             _phoneNumberBlacklist = phoneNumberBlacklist;
             if (mailgun == null)
@@ -155,6 +156,21 @@ namespace Boxofon.Web.Modules
                 response.SayInSwedish("Tack för ditt samtal.");
                 response.Hangup();
                 return response.ToNancyResponse();
+            };
+
+            Post["/connect-deauthorize"] = parameters =>
+            {
+                var twilioUserAccountSid = Request.Form["AccountSid"];
+                var boxofonConnectAppSid = Request.Form["ConnectAppSid"];
+
+                if (boxofonConnectAppSid != WebConfigurationManager.AppSettings["twilio:ConnectAppSid"])
+                {
+                    Logger.Info("Received a Twilio Connect deauthorization request with the wrong ConnectAppSid ('{0}').", boxofonConnectAppSid);
+                    return HttpStatusCode.BadRequest;
+                }
+
+                // TODO
+                throw new NotImplementedException("Twilio Connect deauthorization");
             };
         }
     }

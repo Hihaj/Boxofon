@@ -141,6 +141,7 @@
     <Compile Include="Security\SecurityHooks.cs" />
     <Compile Include="Twilio\RequestValidator.cs" />
     <Compile Include="Twilio\TwilioResponseExtensions.cs" />
+    <Compile Include="ViewModels\AccountOverviewViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

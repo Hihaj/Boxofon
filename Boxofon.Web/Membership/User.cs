@@ -26,6 +26,7 @@ namespace Boxofon.Web.Membership
 
         public Guid Id { get; set; }
         public string Email { get; set; }
+        public string TwilioAccountSid { get; set; }
         public IList<ProviderIdentity> ProviderIdentities { get { return _providerIdentities; } } 
         
         string IUserIdentity.UserName
