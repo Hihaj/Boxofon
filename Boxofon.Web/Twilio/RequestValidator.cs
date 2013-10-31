@@ -9,6 +9,8 @@ namespace Boxofon.Web.Twilio
 {
     public class RequestValidator
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         /// <summary>
         /// Performs request validation using the current HTTP context passed in manually or from
         /// the ASP.NET MVC ValidateRequestAttribute
@@ -61,7 +63,13 @@ namespace Boxofon.Web.Twilio
 
             // Compare your hash to ours, submitted in the X-Twilio-Signature header. If they match, then you're good to go.
             var sig = context.Request.Headers["X-Twilio-Signature"].FirstOrDefault();
-            return sig == encoded;
+
+            var requestIsValid = sig == encoded;
+            if (!requestIsValid)
+            {
+                Logger.Info("Validation of incoming Twilio request failed.");
+            }
+            return requestIsValid;
         } 
     }
 }

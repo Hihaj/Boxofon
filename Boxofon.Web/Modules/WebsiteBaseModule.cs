@@ -1,5 +1,6 @@
 ﻿using Boxofon.Web.Helpers;
 using Boxofon.Web.Infrastructure;
+using NLog;
 using Nancy;
 using Nancy.Security;
 
@@ -7,7 +8,7 @@ namespace Boxofon.Web.Modules
 {
     public abstract class WebsiteBaseModule : NancyModule
     {
-        protected WebsiteBaseModule() : base()
+        protected WebsiteBaseModule()
         {
             this.RequiresHttps();
 
