@@ -67,6 +67,7 @@ namespace Boxofon.Web.Twilio
             var requestIsValid = !string.IsNullOrEmpty(signature) && signature == encoded;
             if (!requestIsValid)
             {
+                Logger.Info(fullUrl);
                 Logger.Info("Validation of incoming Twilio request failed ({0}).", 
                     string.IsNullOrEmpty(signature) ? "signature missing" : "signature mismatch");
             }
