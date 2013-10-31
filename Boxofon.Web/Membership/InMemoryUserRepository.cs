@@ -22,6 +22,15 @@ namespace Boxofon.Web.Membership
                 .FirstOrDefault();
         }
 
+        public User GetByTwilioAccountSid(string twilioAccountSid)
+        {
+            if (string.IsNullOrEmpty(twilioAccountSid))
+            {
+                throw new ArgumentNullException("twilioAccountSid");
+            }
+            return Users.FirstOrDefault(user => user.TwilioAccountSid != null && user.TwilioAccountSid == twilioAccountSid);
+        }
+
         public void Save(User user)
         {
             lock (SyncToken)

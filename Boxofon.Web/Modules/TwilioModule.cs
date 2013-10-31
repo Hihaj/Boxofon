@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web.Configuration;
 using Boxofon.Web.Helpers;
 using Boxofon.Web.Mailgun;
+using Boxofon.Web.Membership;
 using Boxofon.Web.Security;
 using Boxofon.Web.Twilio;
 using NLog;
@@ -22,19 +23,11 @@ namespace Boxofon.Web.Modules
         private readonly IPhoneNumberBlacklist _phoneNumberBlacklist;
         private readonly IMailgunRestClient _mailgun;
         private readonly IUrlHelper _urlHelper;
+        private readonly IUserRepository _userRepository;
 
-        public TwilioModule(IPhoneNumberBlacklist phoneNumberBlacklist, IMailgunRestClient mailgun, IUrlHelper urlHelper)
+        public TwilioModule(IPhoneNumberBlacklist phoneNumberBlacklist, IMailgunRestClient mailgun, IUrlHelper urlHelper, IUserRepository userRepository)
             : base("/twilio")
         {
-            this.RequiresHttps();
-            this.RequiresWebhookAuthKey();
-
-            // Verify that the request is done by Twilio.
-            Before.AddItemToEndOfPipeline(ctx =>
-                                          (new Boxofon.Web.Twilio.RequestValidator()).IsValidRequest(ctx, WebConfigurationManager.AppSettings["twilio:AuthToken"]) ?
-                                              null :
-                                              new Response { StatusCode = HttpStatusCode.Unauthorized });
-
             _phoneNumberBlacklist = phoneNumberBlacklist;
             if (mailgun == null)
             {
@@ -46,6 +39,20 @@ namespace Boxofon.Web.Modules
                 throw new ArgumentNullException("urlHelper");
             }
             _urlHelper = urlHelper;
+            if (userRepository == null)
+            {
+                throw new ArgumentNullException("userRepository");
+            }
+            _userRepository = userRepository;
+            
+            this.RequiresHttps();
+            this.RequiresWebhookAuthKey();
+
+            // Verify that the request is done by Twilio.
+            Before.AddItemToEndOfPipeline(ctx =>
+                                          (new Boxofon.Web.Twilio.RequestValidator()).IsValidRequest(ctx, WebConfigurationManager.AppSettings["twilio:AuthToken"]) ?
+                                              null :
+                                              new Response { StatusCode = HttpStatusCode.Unauthorized });
 
             Post["/incoming"] = parameters =>
             {
@@ -169,8 +176,23 @@ namespace Boxofon.Web.Modules
                     return HttpStatusCode.BadRequest;
                 }
 
-                // TODO
-                throw new NotImplementedException("Twilio Connect deauthorization");
+                if (string.IsNullOrEmpty(twilioUserAccountSid))
+                {
+                    Logger.Info("Received a Twilio Connect deauthorization request without AccountSid.");
+                    return HttpStatusCode.BadRequest;
+                }
+
+                var user = _userRepository.GetByTwilioAccountSid(twilioUserAccountSid);
+                if (user == null)
+                {
+                    Logger.Info("Received a Twilio Connect deauthorization request for a user that does not exist (AccountSid = '{0}').", twilioUserAccountSid);
+                    return HttpStatusCode.OK;
+                }
+
+                Logger.Debug("Received a Twilio Connect deauthorization request for user '{0}'.", user.Id);
+                user.TwilioAccountSid = null;
+                _userRepository.Save(user);
+                return HttpStatusCode.OK;
             };
         }
     }

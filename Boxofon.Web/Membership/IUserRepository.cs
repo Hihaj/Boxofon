@@ -6,6 +6,7 @@ namespace Boxofon.Web.Membership
     {
         User GetById(Guid id);
         Guid? GetIdByProviderNameAndProviderUserId(string providerName, string providerUserId);
+        User GetByTwilioAccountSid(string twilioAccountSid);
         void Save(User user);
     }
 }
