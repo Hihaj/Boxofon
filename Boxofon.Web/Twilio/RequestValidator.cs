@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using NLog;
 using Nancy;
+using ServiceStack.Text;
 
 namespace Boxofon.Web.Twilio
 {
@@ -74,6 +75,8 @@ namespace Boxofon.Web.Twilio
             {
                 Logger.Info("Validation of incoming Twilio request failed ({0}).", 
                     string.IsNullOrEmpty(signature) ? "signature missing" : "signature mismatch");
+
+                Logger.Info(context.Request.Dump());
             }
             return requestIsValid;
         } 
