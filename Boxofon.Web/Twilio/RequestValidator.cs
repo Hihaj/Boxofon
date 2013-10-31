@@ -4,7 +4,6 @@ using System.Security.Cryptography;
 using System.Text;
 using NLog;
 using Nancy;
-using ServiceStack.Text;
 
 namespace Boxofon.Web.Twilio
 {
@@ -43,7 +42,6 @@ namespace Boxofon.Web.Twilio
             var value = new StringBuilder();
             var fullUrl = string.IsNullOrEmpty(urlOverride) ? ((Uri)context.Request.Url).AbsoluteUri : urlOverride;
             value.Append(fullUrl);
-            Logger.Info(fullUrl);
 
             // If the request is a POST, take all of the POST parameters and sort them alphabetically.
             if (context.Request.Method == "POST")
@@ -54,7 +52,6 @@ namespace Boxofon.Web.Twilio
                 {
                     value.Append(key);
                     value.Append((string)context.Request.Form[key]);
-                    Logger.Info("{0}:{1}", key, (string)context.Request.Form[key]);
                 }
             }
             // Sign the resulting value with HMAC-SHA1 using your AuthToken as the key (remember, your AuthToken's case matters!).
@@ -67,16 +64,11 @@ namespace Boxofon.Web.Twilio
             // Compare your hash to ours, submitted in the X-Twilio-Signature header. If they match, then you're good to go.
             var signature = context.Request.Headers["X-Twilio-Signature"].FirstOrDefault();
 
-            Logger.Info("Signature: {0}", signature);
-            Logger.Info("Hash:      {0}", encoded);
-
             var requestIsValid = !string.IsNullOrEmpty(signature) && signature == encoded;
             if (!requestIsValid)
             {
                 Logger.Info("Validation of incoming Twilio request failed ({0}).", 
                     string.IsNullOrEmpty(signature) ? "signature missing" : "signature mismatch");
-
-                Logger.Info(context.Request.Dump());
             }
             return requestIsValid;
         } 
