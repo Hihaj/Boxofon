@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.Configuration;
+using NLog;
 using Nancy;
 using Nancy.Responses;
 
@@ -9,7 +10,14 @@ namespace Boxofon.Web.Security
     {
         public static Func<NancyContext, Response> RequiresWebhookAuthKey()
         {
-            return UnauthorizedIfNot(ctx => ctx.Request.Query.authKey == WebConfigurationManager.AppSettings["boxofon:WebhookAuthKey"]);
+            return UnauthorizedIfNot(ctx =>
+            {
+                if (ctx.Request.Query.authKey != WebConfigurationManager.AppSettings["boxofon:WebhookAuthKey"])
+                {
+                    LogManager.GetCurrentClassLogger().Info("Request.Query.authKey = {0}", ctx.Request.Query.authKey);
+                }
+                return ctx.Request.Query.authKey == WebConfigurationManager.AppSettings["boxofon:WebhookAuthKey"];
+            });
         }
 
         /// <summary>
