@@ -67,6 +67,9 @@ namespace Boxofon.Web.Twilio
             // Compare your hash to ours, submitted in the X-Twilio-Signature header. If they match, then you're good to go.
             var signature = context.Request.Headers["X-Twilio-Signature"].FirstOrDefault();
 
+            Logger.Debug("Twilio signature:   {0}", signature);
+            Logger.Debug("Computed signature: {0}", encoded);
+
             var requestIsValid = !string.IsNullOrEmpty(signature) && signature == encoded;
             if (!requestIsValid)
             {
