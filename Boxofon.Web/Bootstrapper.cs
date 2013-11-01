@@ -52,5 +52,12 @@ namespace Boxofon.Web
                 }
             });
         }
+
+        protected override void RequestStartup(TinyIoCContainer container, IPipelines pipelines, NancyContext context)
+        {
+            base.RequestStartup(container, pipelines, context);
+
+            Logger.Debug(context.Request.Url);
+        }
     }
 }
