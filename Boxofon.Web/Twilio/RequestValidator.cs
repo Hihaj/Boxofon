@@ -55,6 +55,9 @@ namespace Boxofon.Web.Twilio
                 }
             }
             // Sign the resulting value with HMAC-SHA1 using your AuthToken as the key (remember, your AuthToken's case matters!).
+
+            Logger.Debug(value.ToString());
+
             var sha1 = new HMACSHA1(Encoding.UTF8.GetBytes(authToken));
             var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(value.ToString()));
 
