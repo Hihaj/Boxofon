@@ -33,7 +33,7 @@ namespace Boxofon.Web.Modules
                 return View["Overview.cshtml", viewModel];
             };
 
-            Get["/twilio/connect-authorize"] = parameters =>
+            Get["/twilio/connect/authorize"] = parameters =>
             {
                 var twilioAccountSid = Request.Query["AccountSid"];
                 if (Request.Query["error"] == "unauthorized_client" || string.IsNullOrEmpty(twilioAccountSid))
