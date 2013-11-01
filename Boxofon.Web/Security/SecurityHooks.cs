@@ -34,7 +34,7 @@ namespace Boxofon.Web.Security
         {
             return UnauthorizedIfNot(ctx =>
             {
-                return TwilioRequestValidator.IsValidRequest(ctx, WebConfigurationManager.AppSettings["twilio:AuthToken"], "https://boxofon.azurewebsites.net/twilio/connect/deauthorize?authKey=" + WebConfigurationManager.AppSettings["twilio:WebhookAuthKey"]);
+                return TwilioRequestValidator.IsValidRequest(ctx, WebConfigurationManager.AppSettings["twilio:AuthToken"]);
             }, forceStatusCodeResult: true);
         }
 
