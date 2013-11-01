@@ -160,7 +160,7 @@ namespace Boxofon.Web.Modules
                 return response.ToNancyResponse();
             };
 
-            Post["/connect-deauthorize"] = parameters =>
+            Post["/connect/deauthorize"] = parameters =>
             {
                 var twilioUserAccountSid = Request.Form["AccountSid"];
                 var boxofonConnectAppSid = Request.Form["ConnectAppSid"];
