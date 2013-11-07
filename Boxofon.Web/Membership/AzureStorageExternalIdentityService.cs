@@ -27,7 +27,7 @@ namespace Boxofon.Web.Membership
 
         public override Guid? GetBoxofonUserId(string providerName, string providerUserId)
         {
-            var op = TableOperation.Retrieve<ExternalIdentityEntity>(providerName, providerUserId);
+            var op = TableOperation.Retrieve<ExternalIdentityEntity>(providerUserId, providerName);
             var result = Table().Execute(op);
             return result.Result == null ? (Guid?)null : ((ExternalIdentityEntity)result.Result).UserId;
         }
@@ -41,8 +41,8 @@ namespace Boxofon.Web.Membership
 
         public class ExternalIdentityEntity : TableEntity
         {
-            public string ProviderName { get { return PartitionKey; } }
-            public string ProviderUserId { get { return RowKey; } }
+            public string ProviderName { get { return RowKey; } }
+            public string ProviderUserId { get { return PartitionKey; } }
             public Guid UserId { get; set; }
 
             public ExternalIdentityEntity()
@@ -51,8 +51,8 @@ namespace Boxofon.Web.Membership
 
             public ExternalIdentityEntity(string providerName, string providerUserId, Guid userId)
             {
-                PartitionKey = providerName;
-                RowKey = providerUserId;
+                PartitionKey = providerUserId;
+                RowKey = providerName;
                 UserId = userId;
             }
         }
