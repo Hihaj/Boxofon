@@ -48,8 +48,19 @@
       <HintPath>..\packages\logentries.nlog.2.2.0\lib\net40\LogentriesNLog.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Data.Edm, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Data.Edm.5.2.0\lib\net40\Microsoft.Data.Edm.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Data.OData, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Data.OData.5.2.0\lib\net40\Microsoft.Data.OData.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.WindowsAzure.Configuration">
       <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.2.0.1.0\lib\net40\Microsoft.WindowsAzure.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Storage">
+      <HintPath>..\packages\WindowsAzure.Storage.2.1.0.3\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
     </Reference>
     <Reference Include="Nancy, Version=0.21.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -85,7 +96,13 @@
       <HintPath>..\packages\SimpleAuthentication.Core.0.3.7\lib\net40\SimpleAuthentication.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.Services.Client" />
+    <Reference Include="System.Spatial, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\System.Spatial.5.2.0\lib\net40\System.Spatial.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.DynamicData" />
@@ -110,6 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\blacklist.txt" />
+    <Content Include="robots.txt" />
     <Content Include="Views\Account\Overview.cshtml" />
     <None Include="Views\AuthenticateCallback.cshtml" />
     <Content Include="Web.config" />
@@ -127,10 +145,18 @@
     <Compile Include="IPhoneNumberBlacklist.cs" />
     <Compile Include="Mailgun\IMailgunRestClient.cs" />
     <Compile Include="Mailgun\MailgunRestClient.cs" />
+    <Compile Include="Membership\ExternalIdentity.cs" />
+    <Compile Include="Messages\UnlinkedTwilioAccountFromUser.cs" />
+    <Compile Include="Messages\LinkedTwilioAccountToUser.cs" />
+    <Compile Include="Twilio\InMemoryTwilioAccountService.cs" />
+    <Compile Include="Membership\IExternalIdentityService.cs" />
+    <Compile Include="Membership\InMemoryExternalIdentityService.cs" />
     <Compile Include="Membership\InMemoryUserRepository.cs" />
     <Compile Include="Membership\IUserRepository.cs" />
     <Compile Include="Membership\User.cs" />
     <Compile Include="Membership\UserMapper.cs" />
+    <Compile Include="Messages\AddedExternalIdentityToUser.cs" />
+    <Compile Include="Messages\UserCreated.cs" />
     <Compile Include="Modules\AccountModule.cs" />
     <Compile Include="Modules\WebsiteBaseModule.cs" />
     <Compile Include="Modules\HomeModule.cs" />
@@ -139,6 +165,8 @@
     <Compile Include="Security\AuthenticationCallbackProvider.cs" />
     <Compile Include="Security\ModuleSecurity.cs" />
     <Compile Include="Security\SecurityHooks.cs" />
+    <Compile Include="TinyMessenger.cs" />
+    <Compile Include="Twilio\ITwilioAccountService.cs" />
     <Compile Include="Twilio\RequestValidator.cs" />
     <Compile Include="Twilio\TwilioResponseExtensions.cs" />
     <Compile Include="ViewModels\AccountOverviewViewModel.cs" />

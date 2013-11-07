@@ -1,23 +1,39 @@
 ﻿using System;
 using Boxofon.Web.Helpers;
 using Boxofon.Web.Membership;
+using Boxofon.Web.Messages;
 using Nancy;
 using Nancy.SimpleAuthentication;
 using Nancy.Authentication.Forms;
+using TinyMessenger;
 
 namespace Boxofon.Web.Security
 {
     public class AuthenticationCallbackProvider : IAuthenticationCallbackProvider
     {
+        private readonly IExternalIdentityService _externalIdentityService;
         private readonly IUserRepository _userRepository;
+        private readonly ITinyMessengerHub _hub;
 
-        public AuthenticationCallbackProvider(IUserRepository userRepository)
+        public AuthenticationCallbackProvider(IExternalIdentityService externalIdentityService, IUserRepository userRepository, ITinyMessengerHub hub)
         {
+            if (externalIdentityService == null)
+            {
+                throw new ArgumentNullException("externalIdentityService");
+            }
+            _externalIdentityService = externalIdentityService;
+
             if (userRepository == null)
             {
                 throw new ArgumentNullException("userRepository");
             }
             _userRepository = userRepository;
+
+            if (hub == null)
+            {
+                throw new ArgumentNullException("hub");
+            }
+            _hub = hub;
         }
 
         public dynamic OnRedirectToAuthenticationProviderError(NancyModule nancyModule, string errorMessage)
@@ -37,15 +53,26 @@ namespace Boxofon.Web.Security
             {
                 returnUrl = "/account";
             }
-            var userId = _userRepository.GetIdByProviderNameAndProviderUserId(model.AuthenticatedClient.ProviderName, model.AuthenticatedClient.UserInformation.Id);
+            var userId = _externalIdentityService.GetBoxofonUserId(model.AuthenticatedClient.ProviderName, model.AuthenticatedClient.UserInformation.Id);
             if (nancyModule.IsAuthenticated())
             {
                 if (!userId.HasValue)
                 {
                     // Link provider identity to signed in user
                     var user = nancyModule.GetCurrentUser();
-                    user.ProviderIdentities.Add(new User.ProviderIdentity { ProviderName = model.AuthenticatedClient.ProviderName, ProviderUserId = model.AuthenticatedClient.UserInformation.Id });
+                    var providerId = new ExternalIdentity
+                    {
+                        ProviderName = model.AuthenticatedClient.ProviderName, 
+                        ProviderUserId = model.AuthenticatedClient.UserInformation.Id
+                    };
+                    user.ExternalIdentities.Add(providerId);
                     _userRepository.Save(user);
+                    _hub.PublishAsync(new AddedExternalIdentityToUser
+                    {
+                        ProviderName = providerId.ProviderName,
+                        ProviderUserId = providerId.ProviderUserId,
+                        UserId = user.Id
+                    });
                     nancyModule.Request.AddAlertMessage("success", "Inloggningssättet lades till ditt konto.");
                     return nancyModule.Response.AsRedirect(returnUrl);
                 }
@@ -76,8 +103,18 @@ namespace Boxofon.Web.Security
                         Id = Guid.NewGuid(),
                         Email = model.AuthenticatedClient.UserInformation.Email,
                     };
-                    user.ProviderIdentities.Add(new User.ProviderIdentity { ProviderName = model.AuthenticatedClient.ProviderName, ProviderUserId = model.AuthenticatedClient.UserInformation.Id });
+                    var externalId = new ExternalIdentity
+                    {
+                        ProviderName = model.AuthenticatedClient.ProviderName, 
+                        ProviderUserId = model.AuthenticatedClient.UserInformation.Id
+                    };
+                    user.ExternalIdentities.Add(externalId);
                     _userRepository.Save(user);
+                    _hub.PublishAsync(new UserCreated
+                    {
+                        UserId = user.Id,
+                        ExternalIdentity = externalId
+                    });
                     nancyModule.Request.AddAlertMessage("success", "Välkommen som ny användare!");
                     return nancyModule.LoginAndRedirect(user.Id, fallbackRedirectUrl: returnUrl);
                 }

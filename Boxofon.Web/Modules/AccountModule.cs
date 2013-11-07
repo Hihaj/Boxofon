@@ -2,18 +2,26 @@
 using System.Web.Configuration;
 using Boxofon.Web.Helpers;
 using Boxofon.Web.Membership;
+using Boxofon.Web.Messages;
 using Boxofon.Web.ViewModels;
 using Nancy;
 using Nancy.Security;
+using TinyMessenger;
 
 namespace Boxofon.Web.Modules
 {
     public class AccountModule : WebsiteBaseModule
     {
+        private readonly ITinyMessengerHub _hub;
         private readonly IUserRepository _userRepository;
 
-        public AccountModule(IUserRepository userRepository) : base("/account")
+        public AccountModule(ITinyMessengerHub hub, IUserRepository userRepository) : base("/account")
         {
+            if (hub == null)
+            {
+                throw new ArgumentNullException("hub");
+            }
+            _hub = hub;
             if (userRepository == null)
             {
                 throw new ArgumentNullException("userRepository");
@@ -51,6 +59,11 @@ namespace Boxofon.Web.Modules
 
                 user.TwilioAccountSid = twilioAccountSid;
                 _userRepository.Save(user);
+                _hub.PublishAsync(new LinkedTwilioAccountToUser
+                {
+                    TwilioAccountSid = twilioAccountSid,
+                    UserId = user.Id
+                });
                 Request.AddAlertMessage("success", "Twilio-kontot har anslutits.");
                 return Response.AsRedirect("/account");
             };

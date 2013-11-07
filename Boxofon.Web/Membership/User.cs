@@ -6,28 +6,12 @@ namespace Boxofon.Web.Membership
 {
     public class User : IUserIdentity
     {
-        public class ProviderIdentity
-        {
-            public string ProviderName { get; set; }
-            public string ProviderUserId { get; set; }
-
-            public ProviderIdentity()
-            {
-            }
-
-            public ProviderIdentity(string providerName, string providerUserId)
-            {
-                ProviderName = providerName;
-                ProviderUserId = providerUserId;
-            }
-        }
-
-        private readonly List<ProviderIdentity> _providerIdentities = new List<ProviderIdentity>(); 
+        private readonly List<ExternalIdentity> _externalIdentities = new List<ExternalIdentity>(); 
 
         public Guid Id { get; set; }
         public string Email { get; set; }
         public string TwilioAccountSid { get; set; }
-        public IList<ProviderIdentity> ProviderIdentities { get { return _providerIdentities; } } 
+        public IList<ExternalIdentity> ExternalIdentities { get { return _externalIdentities; } } 
         
         string IUserIdentity.UserName
         {

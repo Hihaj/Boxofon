@@ -4,6 +4,7 @@ using System.Web.Configuration;
 using Boxofon.Web.Helpers;
 using Boxofon.Web.Mailgun;
 using Boxofon.Web.Membership;
+using Boxofon.Web.Messages;
 using Boxofon.Web.Security;
 using Boxofon.Web.Twilio;
 using NLog;
@@ -11,6 +12,7 @@ using Nancy;
 using Nancy.Helpers;
 using Nancy.ModelBinding;
 using Nancy.Security;
+using TinyMessenger;
 using Twilio.Mvc;
 using Twilio.TwiML;
 
@@ -24,8 +26,16 @@ namespace Boxofon.Web.Modules
         private readonly IMailgunRestClient _mailgun;
         private readonly IUrlHelper _urlHelper;
         private readonly IUserRepository _userRepository;
+        private readonly ITwilioAccountService _twilioAccountService;
+        private readonly ITinyMessengerHub _hub;
 
-        public TwilioModule(IPhoneNumberBlacklist phoneNumberBlacklist, IMailgunRestClient mailgun, IUrlHelper urlHelper, IUserRepository userRepository)
+        public TwilioModule(
+            IPhoneNumberBlacklist phoneNumberBlacklist, 
+            IMailgunRestClient mailgun, 
+            IUrlHelper urlHelper, 
+            IUserRepository userRepository, 
+            ITwilioAccountService twilioAccountService, 
+            ITinyMessengerHub hub)
             : base("/twilio")
         {
             _phoneNumberBlacklist = phoneNumberBlacklist;
@@ -44,6 +54,16 @@ namespace Boxofon.Web.Modules
                 throw new ArgumentNullException("userRepository");
             }
             _userRepository = userRepository;
+            if (twilioAccountService == null)
+            {
+                throw new ArgumentNullException("twilioAccountService");
+            }
+            _twilioAccountService = twilioAccountService;
+            if (hub == null)
+            {
+                throw new ArgumentNullException("hub");
+            }
+            _hub = hub;
             
             this.RequiresHttps();
             this.RequiresWebhookAuthKey();
@@ -177,7 +197,12 @@ namespace Boxofon.Web.Modules
                     return HttpStatusCode.BadRequest;
                 }
 
-                var user = _userRepository.GetByTwilioAccountSid(twilioUserAccountSid);
+                User user = null;
+                var userId = _twilioAccountService.GetBoxofonUserId((string)twilioUserAccountSid);
+                if (userId.HasValue)
+                {
+                    user = _userRepository.GetById(userId.Value);
+                }
                 if (user == null)
                 {
                     Logger.Info("Received a Twilio Connect deauthorization request for a user that does not exist (AccountSid = '{0}').", twilioUserAccountSid);
@@ -187,6 +212,11 @@ namespace Boxofon.Web.Modules
                 Logger.Debug("Received a Twilio Connect deauthorization request for user '{0}'.", user.Id);
                 user.TwilioAccountSid = null;
                 _userRepository.Save(user);
+                _hub.PublishAsync(new UnlinkedTwilioAccountFromUser
+                {
+                    TwilioAccountSid = (string)twilioUserAccountSid,
+                    UserId = userId.Value
+                });
                 return HttpStatusCode.OK;
             };
         }
