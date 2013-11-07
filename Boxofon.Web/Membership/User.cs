@@ -6,12 +6,10 @@ namespace Boxofon.Web.Membership
 {
     public class User : IUserIdentity
     {
-        private readonly List<ExternalIdentity> _externalIdentities = new List<ExternalIdentity>(); 
-
         public Guid Id { get; set; }
         public string Email { get; set; }
         public string TwilioAccountSid { get; set; }
-        public IList<ExternalIdentity> ExternalIdentities { get { return _externalIdentities; } } 
+        public List<ExternalIdentity> ExternalIdentities { get; set; } 
         
         string IUserIdentity.UserName
         {
@@ -20,7 +18,12 @@ namespace Boxofon.Web.Membership
 
         IEnumerable<string> IUserIdentity.Claims
         {
-            get { throw new NotImplementedException(); }
+            get { throw new NotSupportedException(); }
+        }
+
+        public User()
+        {
+            ExternalIdentities = new List<ExternalIdentity>();
         }
     }
 }

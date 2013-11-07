@@ -5,24 +5,15 @@ using TinyMessenger;
 
 namespace Boxofon.Web.Twilio
 {
-    public class InMemoryTwilioAccountService : ITwilioAccountService
+    public class InMemoryTwilioAccountService : TwilioAccountServiceBase
     {
         private readonly Dictionary<string, Guid>  _idLookup = new Dictionary<string, Guid>();
-        private readonly ITinyMessengerHub _hub;
 
-        public InMemoryTwilioAccountService(ITinyMessengerHub hub)
+        public InMemoryTwilioAccountService(ITinyMessengerHub hub) : base(hub)
         {
-            if (hub == null)
-            {
-                throw new ArgumentNullException("hub");
-            }
-            _hub = hub;
-
-            _hub.Subscribe<LinkedTwilioAccountToUser>(msg => AddTwilioAccount(msg.TwilioAccountSid, msg.UserId));
-            _hub.Subscribe<UnlinkedTwilioAccountFromUser>(msg => RemoveTwilioAccount(msg.TwilioAccountSid, msg.UserId));
         }
 
-        public Guid? GetBoxofonUserId(string twilioAccountSid)
+        public override Guid? GetBoxofonUserId(string twilioAccountSid)
         {
             Guid userId;
             if (_idLookup.TryGetValue(twilioAccountSid, out userId))
@@ -32,7 +23,7 @@ namespace Boxofon.Web.Twilio
             return null;
         }
 
-        private void AddTwilioAccount(string twilioAccountSid, Guid userId)
+        protected override void AddTwilioAccount(string twilioAccountSid, Guid userId)
         {
             if (!string.IsNullOrEmpty(twilioAccountSid))
             {
@@ -40,7 +31,7 @@ namespace Boxofon.Web.Twilio
             }
         }
 
-        private void RemoveTwilioAccount(string twilioAccountSid, Guid userId)
+        protected override void RemoveTwilioAccount(string twilioAccountSid, Guid userId)
         {
             if (!string.IsNullOrEmpty(twilioAccountSid))
             {

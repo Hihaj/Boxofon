@@ -145,9 +145,13 @@
     <Compile Include="IPhoneNumberBlacklist.cs" />
     <Compile Include="Mailgun\IMailgunRestClient.cs" />
     <Compile Include="Mailgun\MailgunRestClient.cs" />
+    <Compile Include="Membership\AzureStorageExternalIdentityService.cs" />
+    <Compile Include="Membership\AzureStorageUserRepository.cs" />
     <Compile Include="Membership\ExternalIdentity.cs" />
+    <Compile Include="Membership\ExternalIdentityServiceBase.cs" />
     <Compile Include="Messages\UnlinkedTwilioAccountFromUser.cs" />
     <Compile Include="Messages\LinkedTwilioAccountToUser.cs" />
+    <Compile Include="Twilio\AzureStorageTwilioAccountService.cs" />
     <Compile Include="Twilio\InMemoryTwilioAccountService.cs" />
     <Compile Include="Membership\IExternalIdentityService.cs" />
     <Compile Include="Membership\InMemoryExternalIdentityService.cs" />
@@ -168,6 +172,7 @@
     <Compile Include="TinyMessenger.cs" />
     <Compile Include="Twilio\ITwilioAccountService.cs" />
     <Compile Include="Twilio\RequestValidator.cs" />
+    <Compile Include="Twilio\TwilioAccountServiceBase.cs" />
     <Compile Include="Twilio\TwilioResponseExtensions.cs" />
     <Compile Include="ViewModels\AccountOverviewViewModel.cs" />
   </ItemGroup>

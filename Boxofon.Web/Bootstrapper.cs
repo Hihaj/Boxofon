@@ -60,8 +60,17 @@ namespace Boxofon.Web
         {
             base.ConfigureApplicationContainer(container);
 
-            container.Register<ITwilioAccountService>(new InMemoryTwilioAccountService(container.Resolve<ITinyMessengerHub>()));
-            container.Register<IExternalIdentityService>(new InMemoryExternalIdentityService(container.Resolve<ITinyMessengerHub>()));
+            var twilioAccountService = new AzureStorageTwilioAccountService(container.Resolve<ITinyMessengerHub>());
+            twilioAccountService.Initialize();
+            container.Register<ITwilioAccountService>(twilioAccountService);
+
+            var externalIdentityService = new AzureStorageExternalIdentityService(container.Resolve<ITinyMessengerHub>());
+            externalIdentityService.Initialize();
+            container.Register<IExternalIdentityService>(externalIdentityService);
+
+            var userRepository = new AzureStorageUserRepository();
+            userRepository.Initialize();
+            container.Register<IUserRepository>(userRepository);
         }
     }
 }
