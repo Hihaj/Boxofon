@@ -31,6 +31,7 @@ namespace Boxofon.Web
             base.ApplicationStartup(container, pipelines);
 
             CookieBasedSessions.Enable(pipelines);
+            Nancy.Security.Csrf.Enable(pipelines);
 
             pipelines.OnError += (ctx, ex) =>
             {
@@ -71,6 +72,10 @@ namespace Boxofon.Web
             var userRepository = new AzureStorageUserRepository();
             userRepository.Initialize();
             container.Register<IUserRepository>(userRepository);
+
+            var phoneNumberVerificationService = new PhoneNumberVerificationService(container.Resolve<ITwilioClientFactory>());
+            phoneNumberVerificationService.Initialize();
+            container.Register<IPhoneNumberVerificationService>(phoneNumberVerificationService);
         }
     }
 }

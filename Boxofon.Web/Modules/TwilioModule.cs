@@ -23,7 +23,7 @@ namespace Boxofon.Web.Modules
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IPhoneNumberBlacklist _phoneNumberBlacklist;
-        private readonly IMailgunRestClient _mailgun;
+        private readonly IMailgunClient _mailgun;
         private readonly IUrlHelper _urlHelper;
         private readonly IUserRepository _userRepository;
         private readonly ITwilioAccountService _twilioAccountService;
@@ -31,7 +31,7 @@ namespace Boxofon.Web.Modules
 
         public TwilioModule(
             IPhoneNumberBlacklist phoneNumberBlacklist, 
-            IMailgunRestClient mailgun, 
+            IMailgunClient mailgun, 
             IUrlHelper urlHelper, 
             IUserRepository userRepository, 
             ITwilioAccountService twilioAccountService, 

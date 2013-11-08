@@ -1,13 +1,48 @@
 ﻿@{
-    Layout = "Shared/_Layout.cshtml";
+    Layout = "Shared/_Authenticated.cshtml";
 }
 
-<h1>Account</h1>
-@if (Model.IsTwilioAccountConnected)
-{
-    <span>Twilio-konto anslutet</span>
-}
-else
+<h1>Kontoöversikt</h1>
+
+@if (!Model.IsTwilioAccountConnected)
 {
     <a href="@Model.TwilioConnectAuthorizationUrl">Anslut Twilio-konto</a>
 }
+else
+{
+    <div>
+        <strong>Boxofonnummer:</strong>
+        @if (string.IsNullOrEmpty(Model.BoxofonNumber))
+        {
+            <a href="/account/numbers/boxofon">Lägg till</a>
+        }
+        else
+        {
+            @Model.BoxofonNumber
+        }
+    </div>
+}
+
+<div>
+    <strong>Privat mobilnummer:</strong>
+    @if (string.IsNullOrEmpty(Model.PrivatePhoneNumber))
+    {
+        <a href="/account/numbers/private">Lägg till</a>
+    }
+    else
+    {
+        @Model.PrivatePhoneNumber
+    }
+</div>
+
+<div>
+    <strong>E-postadress:</strong>
+    @if (string.IsNullOrEmpty(Model.Email))
+    {
+        <a href="/account/email">Lägg till</a>
+    }
+    else
+    {
+        @Model.Email
+    }
+</div>

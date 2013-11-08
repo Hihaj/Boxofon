@@ -9,7 +9,9 @@ namespace Boxofon.Web.Membership
         public Guid Id { get; set; }
         public string Email { get; set; }
         public string TwilioAccountSid { get; set; }
-        public List<ExternalIdentity> ExternalIdentities { get; set; } 
+        public List<ExternalIdentity> ExternalIdentities { get; set; }
+        public string TwilioPhoneNumber { get; set; }
+        public string PrivatePhoneNumber { get; set; } 
         
         string IUserIdentity.UserName
         {

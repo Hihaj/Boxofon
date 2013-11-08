@@ -1,0 +1,10 @@
+﻿@{
+    Layout = "Shared/_Authenticated.cshtml";
+}
+
+<h1>Verifiera privat mobilnummer</h1>
+<form method="POST">
+    @Html.AntiForgeryToken()
+    Kod: <input type="text" name="Code"/>
+    <button type="submit">Slutför verifiering</button>
+</form>

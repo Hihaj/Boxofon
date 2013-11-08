@@ -1,0 +1,10 @@
+﻿@{
+    Layout = "Shared/_Authenticated.cshtml";
+}
+
+<h1>Privat mobilnummer</h1>
+<form method="POST">
+    @Html.AntiForgeryToken()
+    <input type="text" name="PhoneNumber" value="@ViewBag.PhoneNumber"/>
+    <button type="submit">Skicka verifieringskod</button>
+</form>

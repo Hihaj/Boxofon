@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Configuration;
 using Boxofon.Web.Helpers;
 using Boxofon.Web.Membership;
@@ -7,6 +8,7 @@ using Boxofon.Web.ViewModels;
 using Nancy;
 using Nancy.Security;
 using TinyMessenger;
+using Twilio;
 
 namespace Boxofon.Web.Modules
 {
@@ -33,10 +35,13 @@ namespace Boxofon.Web.Modules
             Get["/"] = parameters =>
             {
                 var user = this.GetCurrentUser();
-                var viewModel = new AccountOverviewViewModel
+                var viewModel = new ViewModels.AccountOverview
                 {
                     IsTwilioAccountConnected = !string.IsNullOrEmpty(user.TwilioAccountSid),
-                    TwilioConnectAuthorizationUrl = string.Format("https://www.twilio.com/authorize/{0}", WebConfigurationManager.AppSettings["twilio:ConnectAppSid"])
+                    TwilioConnectAuthorizationUrl = string.Format("https://www.twilio.com/authorize/{0}", WebConfigurationManager.AppSettings["twilio:ConnectAppSid"]),
+                    BoxofonNumber = user.TwilioPhoneNumber,
+                    PrivatePhoneNumber = user.PrivatePhoneNumber,
+                    Email = user.Email
                 };
                 return View["Overview.cshtml", viewModel];
             };

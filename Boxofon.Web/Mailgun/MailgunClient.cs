@@ -4,12 +4,12 @@ using ServiceStack.Text;
 
 namespace Boxofon.Web.Mailgun
 {
-    public class MailgunRestClient : IMailgunRestClient
+    public class MailgunClient : IMailgunClient
     {
         private readonly string _apiKey;
         private readonly string _domain;
 
-        public MailgunRestClient()
+        public MailgunClient()
         {
             // TODO Inject settings
             _apiKey = WebConfigurationManager.AppSettings["mailgun:ApiKey"];

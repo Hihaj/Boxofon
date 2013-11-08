@@ -129,6 +129,10 @@
     <Content Include="App_Data\blacklist.txt" />
     <Content Include="robots.txt" />
     <Content Include="Views\Account\Overview.cshtml" />
+    <Content Include="Views\Account\AvailablePhoneNumbers.cshtml" />
+    <Content Include="Views\Account\Numbers\Private\Index.cshtml" />
+    <Content Include="Views\Account\Numbers\Boxofon\Index.cshtml" />
+    <Content Include="Views\Account\Numbers\Private\Verification.cshtml" />
     <None Include="Views\AuthenticateCallback.cshtml" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -140,17 +144,22 @@
     <Compile Include="Helpers\IUrlHelper.cs" />
     <Compile Include="Helpers\NancyExtensions.cs" />
     <Compile Include="Helpers\SessionExtensions.cs" />
+    <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Helpers\UrlHelper.cs" />
     <Compile Include="Infrastructure\AlertMessageStore.cs" />
     <Compile Include="IPhoneNumberBlacklist.cs" />
-    <Compile Include="Mailgun\IMailgunRestClient.cs" />
-    <Compile Include="Mailgun\MailgunRestClient.cs" />
+    <Compile Include="Mailgun\IMailgunClient.cs" />
+    <Compile Include="Mailgun\MailgunClient.cs" />
     <Compile Include="Membership\AzureStorageExternalIdentityService.cs" />
     <Compile Include="Membership\AzureStorageUserRepository.cs" />
     <Compile Include="Membership\ExternalIdentity.cs" />
     <Compile Include="Membership\ExternalIdentityServiceBase.cs" />
+    <Compile Include="Membership\IPhoneNumberVerificationService.cs" />
+    <Compile Include="Membership\PhoneNumberVerificationService.cs" />
     <Compile Include="Messages\UnlinkedTwilioAccountFromUser.cs" />
     <Compile Include="Messages\LinkedTwilioAccountToUser.cs" />
+    <Compile Include="Modules\BoxofonNumbersModule.cs" />
+    <Compile Include="Modules\PrivateNumbersModule.cs" />
     <Compile Include="Twilio\AzureStorageTwilioAccountService.cs" />
     <Compile Include="Twilio\InMemoryTwilioAccountService.cs" />
     <Compile Include="Membership\IExternalIdentityService.cs" />
@@ -171,10 +180,14 @@
     <Compile Include="Security\SecurityHooks.cs" />
     <Compile Include="TinyMessenger.cs" />
     <Compile Include="Twilio\ITwilioAccountService.cs" />
+    <Compile Include="Twilio\ITwilioClientFactory.cs" />
     <Compile Include="Twilio\RequestValidator.cs" />
     <Compile Include="Twilio\TwilioAccountServiceBase.cs" />
+    <Compile Include="Twilio\TwilioClientFactory.cs" />
     <Compile Include="Twilio\TwilioResponseExtensions.cs" />
-    <Compile Include="ViewModels\AccountOverviewViewModel.cs" />
+    <Compile Include="ViewModels\AccountOverview.cs" />
+    <Compile Include="ViewModels\AvailableBoxofonNumbers.cs" />
+    <Compile Include="ViewModels\BoxofonNumber.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -185,6 +198,7 @@
     <Content Include="Views\Home\Default.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\SignIn.cshtml" />
+    <Content Include="Views\Shared\_Authenticated.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
