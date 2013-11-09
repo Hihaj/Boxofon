@@ -129,10 +129,11 @@
     <Content Include="App_Data\blacklist.txt" />
     <Content Include="robots.txt" />
     <Content Include="Views\Account\Overview.cshtml" />
-    <Content Include="Views\Account\AvailablePhoneNumbers.cshtml" />
     <Content Include="Views\Account\Numbers\Private\Index.cshtml" />
     <Content Include="Views\Account\Numbers\Boxofon\Index.cshtml" />
     <Content Include="Views\Account\Numbers\Private\Verification.cshtml" />
+    <Content Include="Views\Account\Email\Index.cshtml" />
+    <Content Include="Views\Account\Email\Verification.cshtml" />
     <None Include="Views\AuthenticateCallback.cshtml" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -152,6 +153,8 @@
     <Compile Include="Mailgun\MailgunClient.cs" />
     <Compile Include="Membership\AzureStorageExternalIdentityService.cs" />
     <Compile Include="Membership\AzureStorageUserRepository.cs" />
+    <Compile Include="Membership\EmailVerificationService.cs" />
+    <Compile Include="Membership\IEmailVerificationService.cs" />
     <Compile Include="Membership\ExternalIdentity.cs" />
     <Compile Include="Membership\ExternalIdentityServiceBase.cs" />
     <Compile Include="Membership\IPhoneNumberVerificationService.cs" />
@@ -159,6 +162,7 @@
     <Compile Include="Messages\UnlinkedTwilioAccountFromUser.cs" />
     <Compile Include="Messages\LinkedTwilioAccountToUser.cs" />
     <Compile Include="Modules\BoxofonNumbersModule.cs" />
+    <Compile Include="Modules\EmailModule.cs" />
     <Compile Include="Modules\PrivateNumbersModule.cs" />
     <Compile Include="Twilio\AzureStorageTwilioAccountService.cs" />
     <Compile Include="Twilio\InMemoryTwilioAccountService.cs" />

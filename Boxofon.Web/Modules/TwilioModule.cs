@@ -94,8 +94,7 @@ namespace Boxofon.Web.Modules
                 {
                     try
                     {
-                        _mailgun.SendMessage(
-                            from: WebConfigurationManager.AppSettings["boxofon:NoreplyEmail"],
+                        _mailgun.SendNoReplyMessage(
                             to: WebConfigurationManager.AppSettings["MyEmail"],
                             subject: string.Format("Blockerat samtal från {0}", request.From),
                             htmlBody: string.Format(@"Din Boxofon blockerade just ett samtal från <a href=""http://vemringde.se/?q={0}"">{1}</a>.", HttpUtility.UrlEncode(request.From), request.From));
@@ -163,8 +162,7 @@ namespace Boxofon.Web.Modules
                 var request = this.Bind<VoiceRequest>();
                 try
                 {
-                    _mailgun.SendMessage(
-                        from: WebConfigurationManager.AppSettings["boxofon:NoreplyEmail"],
+                    _mailgun.SendNoReplyMessage(
                         to: WebConfigurationManager.AppSettings["MyEmail"],
                         subject: string.Format("Nytt röstmeddelande från {0}", request.From),
                         htmlBody: string.Format(@"Du har ett nytt röstmeddelande från {0}. <a href=""{1}.mp3"">Klicka här för att lyssna.</a>", request.From, request.RecordingUrl));

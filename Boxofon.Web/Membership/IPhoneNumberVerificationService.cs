@@ -4,7 +4,7 @@ namespace Boxofon.Web.Membership
 {
     public interface IPhoneNumberVerificationService
     {
-        void BeginPhoneNumberVerification(Guid userId, string phoneNumber);
-        bool TryCompletePhoneNumberVerification(Guid userId, string phoneNumber, string code);
+        void BeginVerification(Guid userId, string phoneNumber);
+        bool TryCompleteVerification(Guid userId, string phoneNumber, string code);
     }
 }

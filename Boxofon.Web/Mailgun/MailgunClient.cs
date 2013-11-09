@@ -29,5 +29,10 @@ namespace Boxofon.Web.Mailgun
                 },
                 requestFilter: webRequest => { webRequest.Credentials = new NetworkCredential("api", _apiKey); });
         }
+
+        public void SendNoReplyMessage(string to, string subject, string htmlBody)
+        {
+            SendMessage(to, WebConfigurationManager.AppSettings["boxofon:NoreplyEmail"], subject, htmlBody);
+        }
     }
 }

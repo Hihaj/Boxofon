@@ -1,0 +1,10 @@
+﻿@{
+    Layout = "Shared/_Authenticated.cshtml";
+}
+
+<h1>E-postadress</h1>
+<form method="POST">
+    @Html.AntiForgeryToken()
+    <input type="email" name="Email" value="@ViewBag.Email"/>
+    <button type="submit">Skicka verifieringskod</button>
+</form>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Configuration;
+using Boxofon.Web.Mailgun;
 using Boxofon.Web.Membership;
 using Boxofon.Web.Security;
 using Boxofon.Web.Twilio;
@@ -76,6 +77,10 @@ namespace Boxofon.Web
             var phoneNumberVerificationService = new PhoneNumberVerificationService(container.Resolve<ITwilioClientFactory>());
             phoneNumberVerificationService.Initialize();
             container.Register<IPhoneNumberVerificationService>(phoneNumberVerificationService);
+
+            var emailVerificationService = new EmaillVerificationService(container.Resolve<IMailgunClient>());
+            emailVerificationService.Initialize();
+            container.Register<IEmailVerificationService>(emailVerificationService);
         }
     }
 }
