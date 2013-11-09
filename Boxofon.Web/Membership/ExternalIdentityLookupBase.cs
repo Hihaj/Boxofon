@@ -1,24 +1,16 @@
 ﻿using System;
+using Boxofon.Web.Infrastructure;
 using Boxofon.Web.Messages;
 using TinyMessenger;
 
 namespace Boxofon.Web.Membership
 {
-    public abstract class ExternalIdentityLookupBase : IExternalIdentityLookup
+    public abstract class ExternalIdentityLookupBase : IExternalIdentityLookup, ISubscriber
     {
-        protected readonly ITinyMessengerHub Hub;
-
-        protected ExternalIdentityLookupBase(ITinyMessengerHub hub)
+        public void RegisterSubscriptions(ITinyMessengerHub hub)
         {
-            if (hub == null)
-            {
-                throw new ArgumentNullException("hub");
-            }
-            Hub = hub;
-
-            // Set up subscriptions
-            Hub.Subscribe<UserCreated>(msg => AddExternalIdentity(msg.ExternalIdentity.ProviderName, msg.ExternalIdentity.ProviderUserId, msg.UserId));
-            Hub.Subscribe<AddedExternalIdentityToUser>(msg => AddExternalIdentity(msg.ProviderName, msg.ProviderUserId, msg.UserId));
+            hub.Subscribe<UserCreated>(msg => AddExternalIdentity(msg.ExternalIdentity.ProviderName, msg.ExternalIdentity.ProviderUserId, msg.UserId));
+            hub.Subscribe<AddedExternalIdentityToUser>(msg => AddExternalIdentity(msg.ProviderName, msg.ProviderUserId, msg.UserId));
         }
 
         public abstract Guid? GetBoxofonUserId(string providerName, string providerUserId);

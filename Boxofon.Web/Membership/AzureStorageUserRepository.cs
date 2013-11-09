@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Web.Configuration;
+using Boxofon.Web.Infrastructure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using ServiceStack.Text;
 
 namespace Boxofon.Web.Membership
 {
-    public class AzureStorageUserRepository : IUserRepository
+    public class AzureStorageUserRepository : IUserRepository, IRequireInitialization
     {
         private readonly CloudStorageAccount _storageAccount;
 

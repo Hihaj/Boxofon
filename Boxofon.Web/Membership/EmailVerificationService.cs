@@ -2,13 +2,14 @@
 using System.IO;
 using System.Web.Configuration;
 using Boxofon.Web.Helpers;
+using Boxofon.Web.Infrastructure;
 using Boxofon.Web.Mailgun;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 
 namespace Boxofon.Web.Membership
 {
-    public class EmaillVerificationService : IEmailVerificationService
+    public class EmaillVerificationService : IEmailVerificationService, IRequireInitialization
     {
         private static readonly Random Random = new Random();
         private readonly CloudStorageAccount _storageAccount;

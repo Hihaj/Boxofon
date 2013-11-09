@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Web.Configuration;
+using Boxofon.Web.Infrastructure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using TinyMessenger;
 
 namespace Boxofon.Web.Membership
 {
-    public class AzureStorageExternalIdentityLookup : ExternalIdentityLookupBase
+    public class AzureStorageExternalIdentityLookup : ExternalIdentityLookupBase, IRequireInitialization
     {
         private readonly CloudStorageAccount _storageAccount;
 
-        public AzureStorageExternalIdentityLookup(ITinyMessengerHub hub) : base(hub)
+        public AzureStorageExternalIdentityLookup()
         {
             _storageAccount = CloudStorageAccount.Parse(WebConfigurationManager.AppSettings["azure:StorageConnectionString"]);
         }

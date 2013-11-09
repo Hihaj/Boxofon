@@ -148,6 +148,8 @@
     <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Helpers\UrlHelper.cs" />
     <Compile Include="Infrastructure\AlertMessageStore.cs" />
+    <Compile Include="Infrastructure\IRequireInitialization.cs" />
+    <Compile Include="Infrastructure\ISubscriber.cs" />
     <Compile Include="IPhoneNumberBlacklist.cs" />
     <Compile Include="Mailgun\IMailgunClient.cs" />
     <Compile Include="Mailgun\MailgunClient.cs" />
@@ -164,11 +166,8 @@
     <Compile Include="Modules\BoxofonNumbersModule.cs" />
     <Compile Include="Modules\EmailModule.cs" />
     <Compile Include="Modules\PrivateNumbersModule.cs" />
-    <Compile Include="Twilio\AzureStorageTwilioAccountLookup.cs" />
-    <Compile Include="Twilio\InMemoryTwilioAccountLookup.cs" />
+    <Compile Include="Membership\AzureStorageTwilioAccountLookup.cs" />
     <Compile Include="Membership\IExternalIdentityLookup.cs" />
-    <Compile Include="Membership\InMemoryExternalIdentityLookup.cs" />
-    <Compile Include="Membership\InMemoryUserRepository.cs" />
     <Compile Include="Membership\IUserRepository.cs" />
     <Compile Include="Membership\User.cs" />
     <Compile Include="Membership\UserMapper.cs" />
@@ -183,10 +182,10 @@
     <Compile Include="Security\ModuleSecurity.cs" />
     <Compile Include="Security\SecurityHooks.cs" />
     <Compile Include="TinyMessenger.cs" />
-    <Compile Include="Twilio\ITwilioAccountLookup.cs" />
+    <Compile Include="Membership\ITwilioAccountLookup.cs" />
     <Compile Include="Twilio\ITwilioClientFactory.cs" />
     <Compile Include="Twilio\RequestValidator.cs" />
-    <Compile Include="Twilio\TwilioAccountLookupBase.cs" />
+    <Compile Include="Membership\TwilioAccountLookupBase.cs" />
     <Compile Include="Twilio\TwilioClientFactory.cs" />
     <Compile Include="Twilio\TwilioResponseExtensions.cs" />
     <Compile Include="ViewModels\AccountOverview.cs" />

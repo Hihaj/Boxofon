@@ -101,7 +101,7 @@ namespace Boxofon.Web.Security
                     var user = new User
                     {
                         Id = Guid.NewGuid(),
-                        Email = model.AuthenticatedClient.UserInformation.Email,
+                        //Email = model.AuthenticatedClient.UserInformation.Email,
                     };
                     var externalId = new ExternalIdentity
                     {

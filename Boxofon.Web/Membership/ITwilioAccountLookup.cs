@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Boxofon.Web.Twilio
+namespace Boxofon.Web.Membership
 {
     public interface ITwilioAccountLookup
     {

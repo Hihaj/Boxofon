@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Web.Configuration;
+using Boxofon.Web.Infrastructure;
+using Boxofon.Web.Twilio;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using TinyMessenger;
 
-namespace Boxofon.Web.Twilio
+namespace Boxofon.Web.Membership
 {
-    public class AzureStorageTwilioAccountLookup : TwilioAccountLookupBase
+    public class AzureStorageTwilioAccountLookup : TwilioAccountLookupBase, IRequireInitialization
     {
         private readonly CloudStorageAccount _storageAccount;
 
-        public AzureStorageTwilioAccountLookup(ITinyMessengerHub hub) : base(hub)
+        public AzureStorageTwilioAccountLookup()
         {
             _storageAccount = CloudStorageAccount.Parse(WebConfigurationManager.AppSettings["azure:StorageConnectionString"]);
         }

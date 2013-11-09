@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Configuration;
+using Boxofon.Web.Infrastructure;
 using Boxofon.Web.Mailgun;
 using Boxofon.Web.Membership;
 using Boxofon.Web.Security;
@@ -56,31 +57,19 @@ namespace Boxofon.Web
                     context.Response = new Response { StatusCode = (HttpStatusCode)context.Items[SecurityHooks.ForceHttpStatusCodeKey] };
                 }
             });
-        }
 
-        protected override void ConfigureApplicationContainer(TinyIoCContainer container)
-        {
-            base.ConfigureApplicationContainer(container);
+            // Initialize components
+            foreach (var component in container.ResolveAll<IRequireInitialization>())
+            {
+                component.Initialize();
+            }
 
-            var twilioAccountLookup = new AzureStorageTwilioAccountLookup(container.Resolve<ITinyMessengerHub>());
-            twilioAccountLookup.Initialize();
-            container.Register<ITwilioAccountLookup>(twilioAccountLookup);
-
-            var externalIdentityLookup = new AzureStorageExternalIdentityLookup(container.Resolve<ITinyMessengerHub>());
-            externalIdentityLookup.Initialize();
-            container.Register<IExternalIdentityLookup>(externalIdentityLookup);
-
-            var userRepository = new AzureStorageUserRepository();
-            userRepository.Initialize();
-            container.Register<IUserRepository>(userRepository);
-
-            var phoneNumberVerificationService = new PhoneNumberVerificationService(container.Resolve<ITwilioClientFactory>());
-            phoneNumberVerificationService.Initialize();
-            container.Register<IPhoneNumberVerificationService>(phoneNumberVerificationService);
-
-            var emailVerificationService = new EmaillVerificationService(container.Resolve<IMailgunClient>());
-            emailVerificationService.Initialize();
-            container.Register<IEmailVerificationService>(emailVerificationService);
+            // Register subscriptions
+            var hub = container.Resolve<ITinyMessengerHub>();
+            foreach (var subscriber in container.ResolveAll<ISubscriber>())
+            {
+                subscriber.RegisterSubscriptions(hub);
+            }
         }
     }
 }
