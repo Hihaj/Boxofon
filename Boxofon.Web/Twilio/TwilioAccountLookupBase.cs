@@ -4,11 +4,11 @@ using TinyMessenger;
 
 namespace Boxofon.Web.Twilio
 {
-    public abstract class TwilioAccountServiceBase : ITwilioAccountService
+    public abstract class TwilioAccountLookupBase : ITwilioAccountLookup
     {
         protected readonly ITinyMessengerHub Hub;
 
-        protected TwilioAccountServiceBase(ITinyMessengerHub hub)
+        protected TwilioAccountLookupBase(ITinyMessengerHub hub)
         {
             if (hub == null)
             {

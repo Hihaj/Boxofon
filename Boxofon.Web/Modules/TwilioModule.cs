@@ -26,7 +26,7 @@ namespace Boxofon.Web.Modules
         private readonly IMailgunClient _mailgun;
         private readonly IUrlHelper _urlHelper;
         private readonly IUserRepository _userRepository;
-        private readonly ITwilioAccountService _twilioAccountService;
+        private readonly ITwilioAccountLookup _twilioAccountLookup;
         private readonly ITinyMessengerHub _hub;
 
         public TwilioModule(
@@ -34,7 +34,7 @@ namespace Boxofon.Web.Modules
             IMailgunClient mailgun, 
             IUrlHelper urlHelper, 
             IUserRepository userRepository, 
-            ITwilioAccountService twilioAccountService, 
+            ITwilioAccountLookup twilioAccountLookup, 
             ITinyMessengerHub hub)
             : base("/twilio")
         {
@@ -54,11 +54,11 @@ namespace Boxofon.Web.Modules
                 throw new ArgumentNullException("userRepository");
             }
             _userRepository = userRepository;
-            if (twilioAccountService == null)
+            if (twilioAccountLookup == null)
             {
-                throw new ArgumentNullException("twilioAccountService");
+                throw new ArgumentNullException("twilioAccountLookup");
             }
-            _twilioAccountService = twilioAccountService;
+            _twilioAccountLookup = twilioAccountLookup;
             if (hub == null)
             {
                 throw new ArgumentNullException("hub");
@@ -196,7 +196,7 @@ namespace Boxofon.Web.Modules
                 }
 
                 User user = null;
-                var userId = _twilioAccountService.GetBoxofonUserId((string)twilioUserAccountSid);
+                var userId = _twilioAccountLookup.GetBoxofonUserId((string)twilioUserAccountSid);
                 if (userId.HasValue)
                 {
                     user = _userRepository.GetById(userId.Value);

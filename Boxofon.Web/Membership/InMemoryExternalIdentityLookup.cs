@@ -5,11 +5,11 @@ using TinyMessenger;
 
 namespace Boxofon.Web.Membership
 {
-    public class InMemoryExternalIdentityService : ExternalIdentityServiceBase
+    public class InMemoryExternalIdentityLookup : ExternalIdentityLookupBase
     {
         private readonly Dictionary<string, Guid>  _idLookup = new Dictionary<string, Guid>();
 
-        public InMemoryExternalIdentityService(ITinyMessengerHub hub) : base(hub)
+        public InMemoryExternalIdentityLookup(ITinyMessengerHub hub) : base(hub)
         {
         }
 

@@ -11,17 +11,17 @@ namespace Boxofon.Web.Security
 {
     public class AuthenticationCallbackProvider : IAuthenticationCallbackProvider
     {
-        private readonly IExternalIdentityService _externalIdentityService;
+        private readonly IExternalIdentityLookup _externalIdentityLookup;
         private readonly IUserRepository _userRepository;
         private readonly ITinyMessengerHub _hub;
 
-        public AuthenticationCallbackProvider(IExternalIdentityService externalIdentityService, IUserRepository userRepository, ITinyMessengerHub hub)
+        public AuthenticationCallbackProvider(IExternalIdentityLookup externalIdentityLookup, IUserRepository userRepository, ITinyMessengerHub hub)
         {
-            if (externalIdentityService == null)
+            if (externalIdentityLookup == null)
             {
-                throw new ArgumentNullException("externalIdentityService");
+                throw new ArgumentNullException("externalIdentityLookup");
             }
-            _externalIdentityService = externalIdentityService;
+            _externalIdentityLookup = externalIdentityLookup;
 
             if (userRepository == null)
             {
@@ -53,7 +53,7 @@ namespace Boxofon.Web.Security
             {
                 returnUrl = "/account";
             }
-            var userId = _externalIdentityService.GetBoxofonUserId(model.AuthenticatedClient.ProviderName, model.AuthenticatedClient.UserInformation.Id);
+            var userId = _externalIdentityLookup.GetBoxofonUserId(model.AuthenticatedClient.ProviderName, model.AuthenticatedClient.UserInformation.Id);
             if (nancyModule.IsAuthenticated())
             {
                 if (!userId.HasValue)

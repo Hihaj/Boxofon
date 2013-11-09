@@ -5,11 +5,11 @@ using TinyMessenger;
 
 namespace Boxofon.Web.Twilio
 {
-    public class InMemoryTwilioAccountService : TwilioAccountServiceBase
+    public class InMemoryTwilioAccountLookup : TwilioAccountLookupBase
     {
         private readonly Dictionary<string, Guid>  _idLookup = new Dictionary<string, Guid>();
 
-        public InMemoryTwilioAccountService(ITinyMessengerHub hub) : base(hub)
+        public InMemoryTwilioAccountLookup(ITinyMessengerHub hub) : base(hub)
         {
         }
 

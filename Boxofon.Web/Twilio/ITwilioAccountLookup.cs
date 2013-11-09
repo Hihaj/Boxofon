@@ -2,7 +2,7 @@
 
 namespace Boxofon.Web.Twilio
 {
-    public interface ITwilioAccountService
+    public interface ITwilioAccountLookup
     {
         Guid? GetBoxofonUserId(string twilioAccountSid);
     }

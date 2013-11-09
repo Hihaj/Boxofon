@@ -6,11 +6,11 @@ using TinyMessenger;
 
 namespace Boxofon.Web.Membership
 {
-    public class AzureStorageExternalIdentityService : ExternalIdentityServiceBase
+    public class AzureStorageExternalIdentityLookup : ExternalIdentityLookupBase
     {
         private readonly CloudStorageAccount _storageAccount;
 
-        public AzureStorageExternalIdentityService(ITinyMessengerHub hub) : base(hub)
+        public AzureStorageExternalIdentityLookup(ITinyMessengerHub hub) : base(hub)
         {
             _storageAccount = CloudStorageAccount.Parse(WebConfigurationManager.AppSettings["azure:StorageConnectionString"]);
         }

@@ -4,11 +4,11 @@ using TinyMessenger;
 
 namespace Boxofon.Web.Membership
 {
-    public abstract class ExternalIdentityServiceBase : IExternalIdentityService
+    public abstract class ExternalIdentityLookupBase : IExternalIdentityLookup
     {
         protected readonly ITinyMessengerHub Hub;
 
-        protected ExternalIdentityServiceBase(ITinyMessengerHub hub)
+        protected ExternalIdentityLookupBase(ITinyMessengerHub hub)
         {
             if (hub == null)
             {

@@ -6,11 +6,11 @@ using TinyMessenger;
 
 namespace Boxofon.Web.Twilio
 {
-    public class AzureStorageTwilioAccountService : TwilioAccountServiceBase
+    public class AzureStorageTwilioAccountLookup : TwilioAccountLookupBase
     {
         private readonly CloudStorageAccount _storageAccount;
 
-        public AzureStorageTwilioAccountService(ITinyMessengerHub hub) : base(hub)
+        public AzureStorageTwilioAccountLookup(ITinyMessengerHub hub) : base(hub)
         {
             _storageAccount = CloudStorageAccount.Parse(WebConfigurationManager.AppSettings["azure:StorageConnectionString"]);
         }
