@@ -1,0 +1,52 @@
+﻿@{
+    Layout = "Shared/_Authenticated.cshtml";
+}
+
+<h1>Inloggningssätt</h1>
+
+<ul>
+    <li>
+        Google:
+        @if (Model.GoogleIdLinked)
+        {
+            <text>Anslutet</text>
+        }
+        else
+        {
+            <a href="/authentication/redirect/google?returnUrl=/account/identities">Anslut</a>
+        }
+    </li>
+    <li>
+        Twitter:
+        @if (Model.TwitterIdLinked)
+        {
+            <text>Anslutet</text>
+        }
+        else
+        {
+            <a href="/authentication/redirect/twitter?returnUrl=/account/identities">Anslut</a>
+        }
+    </li>
+    <li>
+        Facebook:
+        @if (Model.FacebookIdLinked)
+        {
+            <text>Anslutet</text>
+        }
+        else
+        {
+            <a href="/authentication/redirect/facebook?returnUrl=/account/identities">Anslut</a>
+        }
+    </li>
+    <li>
+        Windows Live:
+        @if (Model.WindowsLiveIdLinked)
+        {
+            <text>Anslutet</text>
+        }
+        else
+        {
+            <a href="/authentication/redirect/windowslive?returnUrl=/account/identities">Anslut</a>
+        }
+    </li>
+</ul>

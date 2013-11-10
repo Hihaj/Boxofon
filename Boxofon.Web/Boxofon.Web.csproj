@@ -134,6 +134,7 @@
     <Content Include="Views\Account\Numbers\Private\Verification.cshtml" />
     <Content Include="Views\Account\Email\Index.cshtml" />
     <Content Include="Views\Account\Email\Verification.cshtml" />
+    <Content Include="Views\Account\Identities.cshtml" />
     <None Include="Views\AuthenticateCallback.cshtml" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -191,6 +192,7 @@
     <Compile Include="ViewModels\AccountOverview.cs" />
     <Compile Include="ViewModels\AvailableBoxofonNumbers.cs" />
     <Compile Include="ViewModels\BoxofonNumber.cs" />
+    <Compile Include="ViewModels\ExternalIdentities.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

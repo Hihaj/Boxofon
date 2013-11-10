@@ -72,6 +72,19 @@ namespace Boxofon.Web.Modules
                 Request.AddAlertMessage("success", "Twilio-kontot har anslutits.");
                 return Response.AsRedirect("/account");
             };
+
+            Get["/identities"] = parameters =>
+            {
+                var user = this.GetCurrentUser();
+                var viewModel = new ViewModels.ExternalIdentities
+                {
+                    GoogleIdLinked = user.ExternalIdentities.Any(id => id.ProviderName == "google"),
+                    TwitterIdLinked = user.ExternalIdentities.Any(id => id.ProviderName == "twitter"),
+                    FacebookIdLinked = user.ExternalIdentities.Any(id => id.ProviderName == "facebook"),
+                    WindowsLiveIdLinked = user.ExternalIdentities.Any(id => id.ProviderName == "windowslive")
+                };
+                return View["Identities.cshtml", viewModel];
+            };
         }
     }
 }
