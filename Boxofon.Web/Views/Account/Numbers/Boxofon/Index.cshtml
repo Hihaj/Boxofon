@@ -2,4 +2,17 @@
     Layout = "Shared/_Authenticated.cshtml";
 }
 
-<h1>Boxofonnummer</h1>
+<h1>Tillgängliga Boxofonnummer</h1>
+<p>
+    <strong>Observera att priserna på denna sida inte garanteras vara korrekta.</strong>
+    För aktuella prisuppgifter, se <a href="https://www.twilio.com/voice/pricing/se" target="_blank">Twilios webbsida</a>.
+</p>
+@foreach (var availableNumber in Model.Numbers)
+{
+    <form method="POST">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="PhoneNumber" value="@availableNumber.PhoneNumber"/>
+        @availableNumber.FriendlyName
+        <button type="submit">Köp för $1/månad</button>
+    </form>
+}

@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Web.Configuration;
 using Boxofon.Web.Helpers;
+using Boxofon.Web.Indexes;
 using Boxofon.Web.Mailgun;
-using Boxofon.Web.Membership;
 using Boxofon.Web.Messages;
+using Boxofon.Web.Model;
 using Boxofon.Web.Security;
 using Boxofon.Web.Twilio;
 using NLog;
@@ -26,7 +27,7 @@ namespace Boxofon.Web.Modules
         private readonly IMailgunClient _mailgun;
         private readonly IUrlHelper _urlHelper;
         private readonly IUserRepository _userRepository;
-        private readonly ITwilioAccountLookup _twilioAccountLookup;
+        private readonly ITwilioAccountIndex _twilioAccountIndex;
         private readonly ITinyMessengerHub _hub;
 
         public TwilioModule(
@@ -34,7 +35,7 @@ namespace Boxofon.Web.Modules
             IMailgunClient mailgun, 
             IUrlHelper urlHelper, 
             IUserRepository userRepository, 
-            ITwilioAccountLookup twilioAccountLookup, 
+            ITwilioAccountIndex twilioAccountIndex, 
             ITinyMessengerHub hub)
             : base("/twilio")
         {
@@ -54,11 +55,11 @@ namespace Boxofon.Web.Modules
                 throw new ArgumentNullException("userRepository");
             }
             _userRepository = userRepository;
-            if (twilioAccountLookup == null)
+            if (twilioAccountIndex == null)
             {
-                throw new ArgumentNullException("twilioAccountLookup");
+                throw new ArgumentNullException("twilioAccountIndex");
             }
-            _twilioAccountLookup = twilioAccountLookup;
+            _twilioAccountIndex = twilioAccountIndex;
             if (hub == null)
             {
                 throw new ArgumentNullException("hub");
@@ -99,7 +100,7 @@ namespace Boxofon.Web.Modules
                             subject: string.Format("Blockerat samtal från {0}", request.From),
                             htmlBody: string.Format(@"Din Boxofon blockerade just ett samtal från <a href=""http://vemringde.se/?q={0}"">{1}</a>.", HttpUtility.UrlEncode(request.From), request.From));
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         // TODO Handle error (log?) - see https://github.com/ServiceStack/ServiceStack/wiki/Http-Utils#exception-handling
                     }
@@ -167,7 +168,7 @@ namespace Boxofon.Web.Modules
                         subject: string.Format("Nytt röstmeddelande från {0}", request.From),
                         htmlBody: string.Format(@"Du har ett nytt röstmeddelande från {0}. <a href=""{1}.mp3"">Klicka här för att lyssna.</a>", request.From, request.RecordingUrl));
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     // TODO Handle error (log?) - see https://github.com/ServiceStack/ServiceStack/wiki/Http-Utils#exception-handling
                 }
@@ -196,7 +197,7 @@ namespace Boxofon.Web.Modules
                 }
 
                 User user = null;
-                var userId = _twilioAccountLookup.GetBoxofonUserId((string)twilioUserAccountSid);
+                var userId = _twilioAccountIndex.GetBoxofonUserId((string)twilioUserAccountSid);
                 if (userId.HasValue)
                 {
                     user = _userRepository.GetById(userId.Value);

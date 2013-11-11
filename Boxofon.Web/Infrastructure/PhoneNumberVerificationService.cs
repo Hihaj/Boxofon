@@ -2,26 +2,26 @@
 using System.IO;
 using System.Web.Configuration;
 using Boxofon.Web.Helpers;
-using Boxofon.Web.Infrastructure;
-using Boxofon.Web.Mailgun;
+using Boxofon.Web.Services;
+using Boxofon.Web.Twilio;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace Boxofon.Web.Membership
+namespace Boxofon.Web.Infrastructure
 {
-    public class EmaillVerificationService : IEmailVerificationService, IRequireInitialization
+    public class PhoneNumberVerificationService : IPhoneNumberVerificationService, IRequireInitialization
     {
         private static readonly Random Random = new Random();
         private readonly CloudStorageAccount _storageAccount;
-        private readonly IMailgunClient _mailgunClient;
+        private readonly ITwilioClientFactory _twilioClientFactory;
 
-        public EmaillVerificationService(IMailgunClient mailgunClient)
+        public PhoneNumberVerificationService(ITwilioClientFactory twilioClientFactory)
         {
-            if (mailgunClient == null)
+            if (twilioClientFactory == null)
             {
-                throw new ArgumentNullException("mailgunClient");
+                throw new ArgumentNullException("twilioClientFactory");
             }
-            _mailgunClient = mailgunClient;
+            _twilioClientFactory = twilioClientFactory;
 
             _storageAccount = CloudStorageAccount.Parse(WebConfigurationManager.AppSettings["azure:StorageConnectionString"]);
         }
@@ -33,26 +33,29 @@ namespace Boxofon.Web.Membership
 
         protected CloudTable Table()
         {
-            return _storageAccount.CreateCloudTableClient().GetTableReference("EmailVerifications");
+            return _storageAccount.CreateCloudTableClient().GetTableReference("PhoneNumberVerifications");
         }
 
-        public void BeginVerification(Guid userId, string email)
+        public void BeginVerification(Guid userId, string phoneNumber)
         {
+            phoneNumber = phoneNumber.ToE164();
             var code = GenerateCode();
-            var entity = new VerificationEntity(userId, email, code);
+            var entity = new VerificationEntity(userId, phoneNumber, code);
             var op = TableOperation.InsertOrReplace(entity);
             Table().Execute(op);
 
-            _mailgunClient.SendNoReplyMessage(email, "Verifiering av e-postadress", string.Format("Din verifieringskod: <strong>{0}</strong>", code));
+            var twilio = _twilioClientFactory.GetClientForApplication();
+            twilio.SendSmsMessage(WebConfigurationManager.AppSettings["twilio:BoxofonSmsNumber"], phoneNumber, code);
         }
 
-        public bool TryCompleteVerification(Guid userId, string email, string code)
+        public bool TryCompleteVerification(Guid userId, string phoneNumber, string code)
         {
-            if (string.IsNullOrEmpty(code) || !email.IsPossiblyValidEmail())
+            if (string.IsNullOrEmpty(code) || !phoneNumber.IsPossiblyValidPhoneNumber())
             {
                 return false;
             }
-            var op = TableOperation.Retrieve<VerificationEntity>(userId.ToString(), email);
+            phoneNumber = phoneNumber.ToE164();
+            var op = TableOperation.Retrieve<VerificationEntity>(userId.ToString(), phoneNumber);
             var entity = (VerificationEntity)Table().Execute(op).Result;
             if (entity != null && entity.Code == code)
             {
@@ -76,10 +79,10 @@ namespace Boxofon.Web.Membership
             {
             }
 
-            public VerificationEntity(Guid userId, string email, string code)
+            public VerificationEntity(Guid userId, string phoneNumber, string code)
             {
                 PartitionKey = userId.ToString();
-                RowKey = email;
+                RowKey = phoneNumber;
                 Code = code;
             }
         }

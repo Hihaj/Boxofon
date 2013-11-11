@@ -1,5 +1,5 @@
 ﻿using System;
-using Boxofon.Web.Membership;
+using Boxofon.Web.Model;
 using TinyMessenger;
 
 namespace Boxofon.Web.Messages

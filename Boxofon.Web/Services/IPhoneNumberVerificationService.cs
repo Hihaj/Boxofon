@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Boxofon.Web.Membership
+namespace Boxofon.Web.Services
 {
     public interface IPhoneNumberVerificationService
     {

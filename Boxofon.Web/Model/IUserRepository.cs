@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Boxofon.Web.Membership
+namespace Boxofon.Web.Model
 {
     public interface IUserRepository
     {

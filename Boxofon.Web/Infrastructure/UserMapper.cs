@@ -1,9 +1,10 @@
 ﻿using System;
+using Boxofon.Web.Model;
 using Nancy;
 using Nancy.Authentication.Forms;
 using Nancy.Security;
 
-namespace Boxofon.Web.Membership
+namespace Boxofon.Web.Infrastructure
 {
     public class UserMapper : IUserMapper
     {

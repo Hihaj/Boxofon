@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Web.Configuration;
-using Boxofon.Web.Infrastructure;
+using Boxofon.Web.Indexes;
+using Boxofon.Web.Messages;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using TinyMessenger;
 
-namespace Boxofon.Web.Membership
+namespace Boxofon.Web.Infrastructure
 {
-    public class AzureStorageExternalIdentityLookup : ExternalIdentityLookupBase, IRequireInitialization
+    public class AzureStorageExternalIdentityIndex : IExternalIdentityIndex, IRequireInitialization, ISubscriber
     {
         private readonly CloudStorageAccount _storageAccount;
 
-        public AzureStorageExternalIdentityLookup()
+        public AzureStorageExternalIdentityIndex()
         {
             _storageAccount = CloudStorageAccount.Parse(WebConfigurationManager.AppSettings["azure:StorageConnectionString"]);
         }
@@ -21,19 +22,25 @@ namespace Boxofon.Web.Membership
             Table().CreateIfNotExists();
         }
 
+        public void RegisterSubscriptions(ITinyMessengerHub hub)
+        {
+            hub.Subscribe<UserCreated>(msg => AddExternalIdentity(msg.ExternalIdentity.ProviderName, msg.ExternalIdentity.ProviderUserId, msg.UserId));
+            hub.Subscribe<AddedExternalIdentityToUser>(msg => AddExternalIdentity(msg.ProviderName, msg.ProviderUserId, msg.UserId));
+        }
+
         protected CloudTable Table()
         {
             return _storageAccount.CreateCloudTableClient().GetTableReference("ExternalIdentities");
         }
 
-        public override Guid? GetBoxofonUserId(string providerName, string providerUserId)
+        public Guid? GetBoxofonUserId(string providerName, string providerUserId)
         {
             var op = TableOperation.Retrieve<ExternalIdentityEntity>(providerUserId, providerName);
             var result = Table().Execute(op);
             return result.Result == null ? (Guid?)null : ((ExternalIdentityEntity)result.Result).UserId;
         }
 
-        protected override void AddExternalIdentity(string providerName, string providerUserId, Guid userId)
+        protected void AddExternalIdentity(string providerName, string providerUserId, Guid userId)
         {
             var entity = new ExternalIdentityEntity(providerName, providerUserId, userId);
             var op = TableOperation.InsertOrReplace(entity);

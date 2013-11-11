@@ -8,7 +8,7 @@
     <strong>Twilio-konto:</strong>
     @if (Model.IsTwilioAccountConnected)
     {
-        <a href="https://www.twilio.com/user/account" target="_blank">Anslutet</a>
+        <a href="@Model.TwilioAccountManagementUrl" target="_blank">Anslutet</a>
     }
     else
     {
@@ -30,18 +30,20 @@
         }
     </div>
 
-
-    <div>
-        <strong>Privat mobilnummer:</strong>
-        @if (string.IsNullOrEmpty(Model.PrivatePhoneNumber))
-        {
-            <a href="/account/numbers/private">Lägg till</a>
-        }
-        else
-        {
-            @Model.PrivatePhoneNumber
-        }
-    </div>
+    @if (!string.IsNullOrEmpty(Model.BoxofonNumber))
+     {
+         <div>
+             <strong>Privat mobilnummer:</strong>
+             @if (string.IsNullOrEmpty(Model.PrivatePhoneNumber))
+             {
+                 <a href="/account/numbers/private">Lägg till</a>
+             }
+             else
+             {
+                 @Model.PrivatePhoneNumber
+             }
+         </div>
+     }
 }
 
 <div>

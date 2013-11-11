@@ -1,6 +1,7 @@
 ﻿using System;
 using Boxofon.Web.Helpers;
-using Boxofon.Web.Membership;
+using Boxofon.Web.Model;
+using Boxofon.Web.Services;
 using Nancy;
 using Nancy.Helpers;
 using Nancy.Security;

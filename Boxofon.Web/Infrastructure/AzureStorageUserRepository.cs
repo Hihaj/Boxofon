@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Web.Configuration;
 using Boxofon.Web.Infrastructure;
+using Boxofon.Web.Model;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using ServiceStack.Text;
 
-namespace Boxofon.Web.Membership
+namespace Boxofon.Web.Infrastructure
 {
     public class AzureStorageUserRepository : IUserRepository, IRequireInitialization
     {

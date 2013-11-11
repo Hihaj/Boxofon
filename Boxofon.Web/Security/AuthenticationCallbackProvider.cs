@@ -1,7 +1,8 @@
 ﻿using System;
 using Boxofon.Web.Helpers;
-using Boxofon.Web.Membership;
+using Boxofon.Web.Indexes;
 using Boxofon.Web.Messages;
+using Boxofon.Web.Model;
 using Nancy;
 using Nancy.SimpleAuthentication;
 using Nancy.Authentication.Forms;
@@ -11,17 +12,17 @@ namespace Boxofon.Web.Security
 {
     public class AuthenticationCallbackProvider : IAuthenticationCallbackProvider
     {
-        private readonly IExternalIdentityLookup _externalIdentityLookup;
+        private readonly IExternalIdentityIndex _externalIdentityIndex;
         private readonly IUserRepository _userRepository;
         private readonly ITinyMessengerHub _hub;
 
-        public AuthenticationCallbackProvider(IExternalIdentityLookup externalIdentityLookup, IUserRepository userRepository, ITinyMessengerHub hub)
+        public AuthenticationCallbackProvider(IExternalIdentityIndex externalIdentityIndex, IUserRepository userRepository, ITinyMessengerHub hub)
         {
-            if (externalIdentityLookup == null)
+            if (externalIdentityIndex == null)
             {
-                throw new ArgumentNullException("externalIdentityLookup");
+                throw new ArgumentNullException("externalIdentityIndex");
             }
-            _externalIdentityLookup = externalIdentityLookup;
+            _externalIdentityIndex = externalIdentityIndex;
 
             if (userRepository == null)
             {
@@ -53,7 +54,7 @@ namespace Boxofon.Web.Security
             {
                 returnUrl = "/account";
             }
-            var userId = _externalIdentityLookup.GetBoxofonUserId(model.AuthenticatedClient.ProviderName, model.AuthenticatedClient.UserInformation.Id);
+            var userId = _externalIdentityIndex.GetBoxofonUserId(model.AuthenticatedClient.ProviderName, model.AuthenticatedClient.UserInformation.Id);
             if (nancyModule.IsAuthenticated())
             {
                 if (!userId.HasValue)

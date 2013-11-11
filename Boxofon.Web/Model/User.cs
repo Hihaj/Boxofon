@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Nancy.Security;
 
-namespace Boxofon.Web.Membership
+namespace Boxofon.Web.Model
 {
     public class User : IUserIdentity
     {

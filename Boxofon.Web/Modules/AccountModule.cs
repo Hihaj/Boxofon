@@ -2,13 +2,11 @@
 using System.Linq;
 using System.Web.Configuration;
 using Boxofon.Web.Helpers;
-using Boxofon.Web.Membership;
 using Boxofon.Web.Messages;
-using Boxofon.Web.ViewModels;
+using Boxofon.Web.Model;
 using Nancy;
 using Nancy.Security;
 using TinyMessenger;
-using Twilio;
 
 namespace Boxofon.Web.Modules
 {
@@ -39,6 +37,7 @@ namespace Boxofon.Web.Modules
                 {
                     IsTwilioAccountConnected = !string.IsNullOrEmpty(user.TwilioAccountSid),
                     TwilioConnectAuthorizationUrl = string.Format("https://www.twilio.com/authorize/{0}", WebConfigurationManager.AppSettings["twilio:ConnectAppSid"]),
+                    TwilioAccountManagementUrl = string.IsNullOrEmpty(user.TwilioAccountSid) ? null : string.Format("https://www.twilio.com/user/account/usage/authorized-app/{0}", WebConfigurationManager.AppSettings["twilio:ConnectAppSid"]),
                     BoxofonNumber = user.TwilioPhoneNumber,
                     PrivatePhoneNumber = user.PrivatePhoneNumber,
                     Email = user.Email

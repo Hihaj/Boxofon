@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Linq;
 using Boxofon.Web.Helpers;
-using Boxofon.Web.Membership;
-using Boxofon.Web.Twilio;
-using Boxofon.Web.ViewModels;
+using Boxofon.Web.Model;
+using Boxofon.Web.Services;
 using Nancy;
 using Nancy.Helpers;
 using Nancy.Security;
 using TinyMessenger;
-using Twilio;
 
 namespace Boxofon.Web.Modules
 {

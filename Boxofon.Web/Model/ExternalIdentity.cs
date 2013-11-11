@@ -1,4 +1,4 @@
-﻿namespace Boxofon.Web.Membership
+﻿namespace Boxofon.Web.Model
 {
     public class ExternalIdentity
     {

@@ -1,11 +1,11 @@
-﻿using Boxofon.Web.Membership;
+﻿using Boxofon.Web.Model;
 using Twilio;
 
 namespace Boxofon.Web.Twilio
 {
     public interface ITwilioClientFactory
     {
-        TwilioRestClient GetApplicationClient();
-        TwilioRestClient GetUserClient(User user);
+        TwilioRestClient GetClientForApplication();
+        TwilioRestClient GetClientForUser(User user);
     }
 }

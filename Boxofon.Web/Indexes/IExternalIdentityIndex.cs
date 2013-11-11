@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Boxofon.Web.Membership
+namespace Boxofon.Web.Indexes
 {
-    public interface IExternalIdentityLookup
+    public interface IExternalIdentityIndex
     {
         Guid? GetBoxofonUserId(string providerName, string providerUserId);
     }

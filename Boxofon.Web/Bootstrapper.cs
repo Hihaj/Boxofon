@@ -2,10 +2,7 @@
 using System.Linq;
 using System.Web.Configuration;
 using Boxofon.Web.Infrastructure;
-using Boxofon.Web.Mailgun;
-using Boxofon.Web.Membership;
 using Boxofon.Web.Security;
-using Boxofon.Web.Twilio;
 using NLog;
 using Nancy;
 using Nancy.Authentication.Forms;
@@ -13,8 +10,6 @@ using Nancy.Bootstrapper;
 using Nancy.Diagnostics;
 using Nancy.Session;
 using Nancy.TinyIoc;
-using SimpleAuthentication.Core;
-using SimpleAuthentication.Core.Providers;
 using TinyMessenger;
 
 namespace Boxofon.Web

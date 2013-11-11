@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Web.Configuration;
-using Boxofon.Web.Membership;
+using Boxofon.Web.Model;
 using Twilio;
 
 namespace Boxofon.Web.Twilio
 {
     public class TwilioClientFactory : ITwilioClientFactory
     {
-        public TwilioRestClient GetApplicationClient()
+        public TwilioRestClient GetClientForApplication()
         {
             return new TwilioRestClient(WebConfigurationManager.AppSettings["twilio:AccountSid"], WebConfigurationManager.AppSettings["twilio:AuthToken"]);
         }
 
-        public TwilioRestClient GetUserClient(User user)
+        public TwilioRestClient GetClientForUser(User user)
         {
             if (string.IsNullOrEmpty(user.TwilioAccountSid))
             {

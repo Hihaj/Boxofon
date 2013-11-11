@@ -1,5 +1,5 @@
 ﻿using Boxofon.Web.Infrastructure;
-using Boxofon.Web.Membership;
+using Boxofon.Web.Model;
 using Nancy;
 
 namespace Boxofon.Web.Helpers

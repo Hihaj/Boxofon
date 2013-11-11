@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Web.Configuration;
-using Boxofon.Web.Infrastructure;
-using Boxofon.Web.Twilio;
+using Boxofon.Web.Indexes;
+using Boxofon.Web.Messages;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using TinyMessenger;
 
-namespace Boxofon.Web.Membership
+namespace Boxofon.Web.Infrastructure
 {
-    public class AzureStorageTwilioAccountLookup : TwilioAccountLookupBase, IRequireInitialization
+    public class AzureStorageTwilioAccountIndex : ITwilioAccountIndex, IRequireInitialization, ISubscriber
     {
         private readonly CloudStorageAccount _storageAccount;
 
-        public AzureStorageTwilioAccountLookup()
+        public AzureStorageTwilioAccountIndex()
         {
             _storageAccount = CloudStorageAccount.Parse(WebConfigurationManager.AppSettings["azure:StorageConnectionString"]);
         }
@@ -22,26 +22,32 @@ namespace Boxofon.Web.Membership
             Table().CreateIfNotExists();
         }
 
+        public void RegisterSubscriptions(ITinyMessengerHub hub)
+        {
+            hub.Subscribe<LinkedTwilioAccountToUser>(msg => AddTwilioAccount(msg.TwilioAccountSid, msg.UserId));
+            hub.Subscribe<UnlinkedTwilioAccountFromUser>(msg => RemoveTwilioAccount(msg.TwilioAccountSid, msg.UserId));
+        }
+
         protected CloudTable Table()
         {
             return _storageAccount.CreateCloudTableClient().GetTableReference("TwilioAccounts");
         }
 
-        public override Guid? GetBoxofonUserId(string twilioAccountSid)
+        public Guid? GetBoxofonUserId(string twilioAccountSid)
         {
             var op = TableOperation.Retrieve<TwilioAccountEntity>(twilioAccountSid, twilioAccountSid);
             var result = Table().Execute(op);
             return result.Result == null ? (Guid?)null : ((TwilioAccountEntity)result.Result).UserId;
         }
 
-        protected override void AddTwilioAccount(string twilioAccountSid, Guid userId)
+        protected void AddTwilioAccount(string twilioAccountSid, Guid userId)
         {
             var entity = new TwilioAccountEntity(twilioAccountSid, userId);
             var op = TableOperation.InsertOrReplace(entity);
             Table().Execute(op);
         }
 
-        protected override void RemoveTwilioAccount(string twilioAccountSid, Guid userId)
+        protected void RemoveTwilioAccount(string twilioAccountSid, Guid userId)
         {
             var table = Table();
             var retrieveOp = TableOperation.Retrieve<TwilioAccountEntity>(twilioAccountSid, twilioAccountSid);

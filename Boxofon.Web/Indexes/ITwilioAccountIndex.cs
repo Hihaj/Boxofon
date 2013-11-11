@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Boxofon.Web.Membership
+namespace Boxofon.Web.Indexes
 {
-    public interface ITwilioAccountLookup
+    public interface ITwilioAccountIndex
     {
         Guid? GetBoxofonUserId(string twilioAccountSid);
     }
