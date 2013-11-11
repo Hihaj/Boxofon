@@ -26,6 +26,7 @@ namespace Boxofon.Web.Infrastructure
         {
             hub.Subscribe<UserCreated>(msg => AddExternalIdentity(msg.ExternalIdentity.ProviderName, msg.ExternalIdentity.ProviderUserId, msg.UserId));
             hub.Subscribe<AddedExternalIdentityToUser>(msg => AddExternalIdentity(msg.ProviderName, msg.ProviderUserId, msg.UserId));
+            hub.Subscribe<RemovedExternalIdentityFromUser>(msg => RemoveExternalIdentity(msg.ProviderName, msg.ProviderUserId, msg.UserId));
         }
 
         protected CloudTable Table()
@@ -45,6 +46,19 @@ namespace Boxofon.Web.Infrastructure
             var entity = new ExternalIdentityEntity(providerName, providerUserId, userId);
             var op = TableOperation.InsertOrReplace(entity);
             Table().Execute(op);
+        }
+
+        protected void RemoveExternalIdentity(string providerName, string providerUserId, Guid userId)
+        {
+            var table = Table();
+            var retrieveOp = TableOperation.Retrieve<ExternalIdentityEntity>(providerUserId, providerName);
+            var retrieveResult = table.Execute(retrieveOp);
+            var entity = (ExternalIdentityEntity)retrieveResult.Result;
+            if (entity != null)
+            {
+                var deleteOp = TableOperation.Delete(entity);
+                table.Execute(deleteOp);
+            }
         }
 
         public class ExternalIdentityEntity : TableEntity

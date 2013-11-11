@@ -158,6 +158,7 @@
     <Compile Include="Infrastructure\AzureStorageExternalIdentityIndex.cs" />
     <Compile Include="Infrastructure\AzureStorageUserRepository.cs" />
     <Compile Include="Infrastructure\EmailVerificationService.cs" />
+    <Compile Include="Messages\RemovedExternalIdentityFromUser.cs" />
     <Compile Include="Services\IEmailVerificationService.cs" />
     <Compile Include="Model\ExternalIdentity.cs" />
     <Compile Include="Services\IPhoneNumberVerificationService.cs" />

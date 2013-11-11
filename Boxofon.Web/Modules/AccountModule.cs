@@ -84,6 +84,29 @@ namespace Boxofon.Web.Modules
                 };
                 return View["Identities.cshtml", viewModel];
             };
+
+            Post["/identities/{providerName}"] = parameters =>
+            {
+                var op = (string)Request.Form.Operation;
+                if (op == "delete")
+                {
+                    var user = this.GetCurrentUser();
+                    var extId = user.ExternalIdentities.FirstOrDefault(id => id.ProviderName == (string)parameters.providerName);
+                    if (extId != null)
+                    {
+                        user.ExternalIdentities.Remove(extId);
+                        _userRepository.Save(user);
+                        _hub.Publish(new RemovedExternalIdentityFromUser
+                        {
+                            ProviderName = extId.ProviderName,
+                            ProviderUserId = extId.ProviderUserId,
+                            UserId = user.Id
+                        });
+                        Request.AddAlertMessage("success", "Inloggningssättet togs bort.");
+                    }
+                }
+                return Response.AsRedirect("/account/identities");
+            };
         }
     }
 }

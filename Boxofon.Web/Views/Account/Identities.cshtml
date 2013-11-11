@@ -9,7 +9,10 @@
         Google:
         @if (Model.GoogleIdLinked)
         {
-            <text>Anslutet</text>
+            <form action="/account/identities/google" method="post">
+                <input type="hidden" name="operation" value="delete"/>
+                <button type="submit">Ta bort</button>
+            </form>
         }
         else
         {
@@ -20,7 +23,10 @@
         Twitter:
         @if (Model.TwitterIdLinked)
         {
-            <text>Anslutet</text>
+            <form action="/account/identities/twitter" method="post">
+                <input type="hidden" name="operation" value="delete"/>
+                <button type="submit">Ta bort</button>
+            </form>
         }
         else
         {
@@ -31,7 +37,10 @@
         Facebook:
         @if (Model.FacebookIdLinked)
         {
-            <text>Anslutet</text>
+            <form action="/account/identities/facebook" method="post">
+                <input type="hidden" name="operation" value="delete"/>
+                <button type="submit">Ta bort</button>
+            </form>
         }
         else
         {
@@ -42,7 +51,10 @@
         Windows Live:
         @if (Model.WindowsLiveIdLinked)
         {
-            <text>Anslutet</text>
+            <form action="/account/identities/windowslive" method="post">
+                <input type="hidden" name="operation" value="delete"/>
+                <button type="submit">Ta bort</button>
+            </form>
         }
         else
         {
