@@ -46,9 +46,10 @@ namespace Boxofon.Web.Modules
 
             Post["/sms"] = parameters =>
             {
-                Logger.Debug("From: {0}", (string)Request.Form["from"]);
-                Logger.Debug("Sender: {0}", (string)Request.Form["sender"]);
-                Logger.Debug("Subject: {0}", (string)Request.Form["subject"]);
+                Logger.Debug("From: {0}", ServiceStack.Text.JsonSerializer.SerializeToString(Request.Form["from"]));
+                Logger.Debug("Sender: {0}", ServiceStack.Text.JsonSerializer.SerializeToString(Request.Form["sender"]));
+                Logger.Debug("Subject: {0}", ServiceStack.Text.JsonSerializer.SerializeToString(Request.Form["subject"]));
+
                 var sendSmsCommand = new MailgunRequest(Request).ToSendSmsCommand();
                 var userId = _emailAddressIndex.GetBoxofonUserId(sendSmsCommand.SenderEmail);
                 User user = userId.HasValue ? _userRepository.GetById(userId.Value) : null;
