@@ -2,6 +2,7 @@
 using System.IO;
 using System.Web.Configuration;
 using Boxofon.Web.Helpers;
+using Boxofon.Web.Model;
 using Boxofon.Web.Services;
 using Boxofon.Web.Twilio;
 using Microsoft.WindowsAzure.Storage;
@@ -36,26 +37,30 @@ namespace Boxofon.Web.Infrastructure
             return _storageAccount.CreateCloudTableClient().GetTableReference("PhoneNumberVerifications");
         }
 
-        public void BeginVerification(Guid userId, string phoneNumber)
+        public void BeginVerification(User user, string phoneNumber)
         {
+            if (string.IsNullOrEmpty(user.TwilioPhoneNumber))
+            {
+                throw new ArgumentException("The user must have a Twilio phone number.");
+            }
             phoneNumber = phoneNumber.ToE164();
             var code = GenerateCode();
-            var entity = new VerificationEntity(userId, phoneNumber, code);
+            var entity = new VerificationEntity(user.Id, phoneNumber, code);
             var op = TableOperation.InsertOrReplace(entity);
             Table().Execute(op);
 
-            var twilio = _twilioClientFactory.GetClientForApplication();
-            twilio.SendSmsMessage(WebConfigurationManager.AppSettings["twilio:BoxofonSmsNumber"], phoneNumber, code);
+            var twilio = _twilioClientFactory.GetClientForUser(user);
+            twilio.SendSmsMessage(user.TwilioPhoneNumber, phoneNumber, code);
         }
 
-        public bool TryCompleteVerification(Guid userId, string phoneNumber, string code)
+        public bool TryCompleteVerification(User user, string phoneNumber, string code)
         {
             if (string.IsNullOrEmpty(code) || !phoneNumber.IsPossiblyValidPhoneNumber())
             {
                 return false;
             }
             phoneNumber = phoneNumber.ToE164();
-            var op = TableOperation.Retrieve<VerificationEntity>(userId.ToString(), phoneNumber);
+            var op = TableOperation.Retrieve<VerificationEntity>(user.Id.ToString(), phoneNumber);
             var entity = (VerificationEntity)Table().Execute(op).Result;
             if (entity != null && entity.Code == code)
             {

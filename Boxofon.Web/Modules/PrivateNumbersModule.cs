@@ -71,7 +71,7 @@ namespace Boxofon.Web.Modules
                     return View["Index.cshtml"];
                 }
                 phoneNumber = phoneNumber.ToE164();
-                _phoneNumberVerificationService.BeginVerification(user.Id, phoneNumber);
+                _phoneNumberVerificationService.BeginVerification(user, phoneNumber);
                 return Response.AsRedirect(string.Format("/account/numbers/private/{0}/verification", phoneNumber.Replace("+", "00")));
             };
 
@@ -85,7 +85,7 @@ namespace Boxofon.Web.Modules
                 var user = this.GetCurrentUser();
                 var phoneNumber = ((string)parameters.phoneNumber).ToE164();
                 var code = (string)Request.Form.Code;
-                var verificationSucceeded = _phoneNumberVerificationService.TryCompleteVerification(user.Id, phoneNumber, code);
+                var verificationSucceeded = _phoneNumberVerificationService.TryCompleteVerification(user, phoneNumber, code);
                 if (!verificationSucceeded)
                 {
                     Request.AddAlertMessage("error", "Felaktig verifieringskod.");

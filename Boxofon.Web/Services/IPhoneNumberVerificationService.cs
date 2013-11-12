@@ -1,10 +1,11 @@
 ﻿using System;
+using Boxofon.Web.Model;
 
 namespace Boxofon.Web.Services
 {
     public interface IPhoneNumberVerificationService
     {
-        void BeginVerification(Guid userId, string phoneNumber);
-        bool TryCompleteVerification(Guid userId, string phoneNumber, string code);
+        void BeginVerification(User user, string phoneNumber);
+        bool TryCompleteVerification(User user, string phoneNumber, string code);
     }
 }
