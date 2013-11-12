@@ -44,7 +44,6 @@ namespace Boxofon.Web.Infrastructure
         {
             public string PhoneNumber { get { return PartitionKey; } }
             public string FriendlyName { get; set; }
-            public string WebhookAuthKey { get; set; }
             public string TwilioAccountSid { get; set; }
             public Guid UserId { get; set; }
 
@@ -57,7 +56,6 @@ namespace Boxofon.Web.Infrastructure
                 PartitionKey = phoneNumber.PhoneNumber;
                 RowKey = phoneNumber.PhoneNumber;
                 FriendlyName = phoneNumber.FriendlyName;
-                WebhookAuthKey = phoneNumber.WebhookAuthKey;
                 TwilioAccountSid = phoneNumber.TwilioAccountSid;
                 UserId = phoneNumber.UserId;
             }
@@ -68,7 +66,6 @@ namespace Boxofon.Web.Infrastructure
                 {
                     PhoneNumber = PhoneNumber,
                     FriendlyName = FriendlyName,
-                    WebhookAuthKey = WebhookAuthKey,
                     TwilioAccountSid = TwilioAccountSid,
                     UserId = UserId
                 };

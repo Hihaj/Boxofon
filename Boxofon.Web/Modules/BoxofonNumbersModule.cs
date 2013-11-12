@@ -24,7 +24,6 @@ namespace Boxofon.Web.Modules
         private readonly IUrlHelper _urlHelper;
         private readonly IUserRepository _userRepository;
         private readonly ITwilioPhoneNumberRepository _twilioPhoneNumberRepository;
-        private readonly IWebhookAuthKeyGenerator _webhookAuthKeyGenerator;
         private readonly ITinyMessengerHub _hub;
 
         public BoxofonNumbersModule(
@@ -32,7 +31,6 @@ namespace Boxofon.Web.Modules
             IUrlHelper urlHelper,
             IUserRepository userRepository,
             ITwilioPhoneNumberRepository twilioPhoneNumberRepository,
-            IWebhookAuthKeyGenerator webhookAuthKeyGenerator,
             ITinyMessengerHub hub) : base("/account/numbers/boxofon")
         {
             if (twilioClientFactory == null)
@@ -55,11 +53,6 @@ namespace Boxofon.Web.Modules
                 throw new ArgumentNullException("twilioPhoneNumberRepository");
             }
             _twilioPhoneNumberRepository = twilioPhoneNumberRepository;
-            if (webhookAuthKeyGenerator == null)
-            {
-                throw new ArgumentNullException("webhookAuthKeyGenerator");
-            }
-            _webhookAuthKeyGenerator = webhookAuthKeyGenerator;
             if (hub == null)
             {
                 throw new ArgumentNullException("hub");
@@ -93,14 +86,13 @@ namespace Boxofon.Web.Modules
                     Request.AddAlertMessage("error", "Välj ett telefonnummer du vill köpa.");
                     return Response.AsRedirect("/account/numbers/boxofon");
                 }
-                var webhookAuthKey = _webhookAuthKeyGenerator.GenerateAuthKey();
                 var twilio = _twilioClientFactory.GetClientForUser(this.GetCurrentUser());
                 var result = twilio.AddIncomingPhoneNumber(new PhoneNumberOptions
                 {
                     PhoneNumber = phoneNumber,
-                    VoiceUrl = _urlHelper.GetAbsoluteUrl("/twilio/voice/incoming", new Dictionary<string, string> { { "authKey", webhookAuthKey } }),
+                    VoiceUrl = _urlHelper.GetAbsoluteUrl("/twilio/voice/incoming", new Dictionary<string, string> { { "authKey", WebConfigurationManager.AppSettings["boxofon:WebhookAuthKey"] } }),
                     VoiceMethod = "POST",
-                    SmsUrl = _urlHelper.GetAbsoluteUrl("/twilio/sms/incoming", new Dictionary<string, string> { { "authKey", webhookAuthKey } }),
+                    SmsUrl = _urlHelper.GetAbsoluteUrl("/twilio/sms/incoming", new Dictionary<string, string> { { "authKey", WebConfigurationManager.AppSettings["boxofon:WebhookAuthKey"] } }),
                     SmsMethod = "POST"
                 });
                 // TODO Handle REST exception in a prettier way.
@@ -134,7 +126,6 @@ namespace Boxofon.Web.Modules
                 {
                     PhoneNumber = result.PhoneNumber,
                     FriendlyName = result.FriendlyName,
-                    WebhookAuthKey = webhookAuthKey,
                     TwilioAccountSid = result.AccountSid,
                     UserId = user.Id
                 };
@@ -144,7 +135,6 @@ namespace Boxofon.Web.Modules
                 {
                     PhoneNumber = result.PhoneNumber,
                     FriendlyName = result.FriendlyName,
-                    WebhookAuthKey = webhookAuthKey,
                     TwilioAccountSid = result.AccountSid,
                     UserId = user.Id
                 });

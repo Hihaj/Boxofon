@@ -184,10 +184,8 @@
     <Compile Include="Modules\TwilioModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\AuthenticationCallbackProvider.cs" />
-    <Compile Include="Security\IWebhookAuthKeyGenerator.cs" />
     <Compile Include="Security\ModuleSecurity.cs" />
     <Compile Include="Security\SecurityHooks.cs" />
-    <Compile Include="Security\WebhookAuthKeyGenerator.cs" />
     <Compile Include="TinyMessenger.cs" />
     <Compile Include="Indexes\ITwilioAccountIndex.cs" />
     <Compile Include="Twilio\ITwilioClientFactory.cs" />
