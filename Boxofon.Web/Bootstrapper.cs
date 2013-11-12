@@ -29,6 +29,7 @@ namespace Boxofon.Web
 
             CookieBasedSessions.Enable(pipelines);
             Nancy.Security.Csrf.Enable(pipelines);
+            StaticConfiguration.CaseSensitive = true;
 
             pipelines.OnError += (ctx, ex) =>
             {
