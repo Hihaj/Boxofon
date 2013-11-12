@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -71,6 +72,13 @@ namespace Boxofon.Web.Helpers
         {
             var bytes = new ZBase32().Decode(encodedValue);
             return Encoding.UTF8.GetString(bytes);
+        }
+
+        public static string HmacSha256HexDigestEncode(this string value, string key)
+        {
+            var sha256 = new HMACSHA256(Encoding.UTF8.GetBytes(key));
+            var hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(value));
+            return BitConverter.ToString(hash).Replace("-", "").ToLower();
         }
 
         // Adapted from http://www.codeproject.com/Tips/76650/Base32-base32url-base64url-and-z-base-32-encoding

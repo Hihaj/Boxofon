@@ -14,5 +14,10 @@ namespace Boxofon.Web.Security
         {
             module.AddBeforeHookOrExecute(SecurityHooks.RequiresValidTwilioSignature(), "Requires valid Twilio signature.");
         }
+
+        public static void RequiresValidMailgunSignature(this INancyModule module)
+        {
+            module.AddBeforeHookOrExecute(SecurityHooks.RequiresValidMailgunSignature(), "Requires valid Mailgun signature.");
+        }
     }
 }

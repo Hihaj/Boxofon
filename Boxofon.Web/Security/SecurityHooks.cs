@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Web.Configuration;
-using Boxofon.Web.Twilio;
 using NLog;
 using Nancy;
 using Nancy.Responses;
@@ -10,7 +9,8 @@ namespace Boxofon.Web.Security
     public static class SecurityHooks
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private static readonly RequestValidator TwilioRequestValidator = new RequestValidator();
+        private static readonly Twilio.RequestValidator TwilioRequestValidator = new Twilio.RequestValidator();
+        private static readonly Mailgun.RequestValidator MailgunRequestValidator = new Mailgun.RequestValidator();
 
         public const string ForceHttpStatusCodeKey = "ForceHttpStatusCode";
 
@@ -35,6 +35,14 @@ namespace Boxofon.Web.Security
             return UnauthorizedIfNot(ctx =>
             {
                 return TwilioRequestValidator.IsValidRequest(ctx, WebConfigurationManager.AppSettings["twilio:AuthToken"]);
+            }, forceStatusCodeResult: true);
+        }
+
+        public static Func<NancyContext, Response> RequiresValidMailgunSignature()
+        {
+            return UnauthorizedIfNot(ctx =>
+            {
+                return MailgunRequestValidator.IsValidRequest(ctx, WebConfigurationManager.AppSettings["mailgun:ApiKey"]);
             }, forceStatusCodeResult: true);
         }
 
