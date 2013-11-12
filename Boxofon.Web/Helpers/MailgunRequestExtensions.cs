@@ -12,7 +12,8 @@ namespace Boxofon.Web.Helpers
         {
             var sendSms = new MailCommands.SendSms
             {
-                SenderEmail = request.Sender
+                SenderEmail = request.Sender,
+                Text = request.StrippedText
             };
             var localPart = GetLocalPart(request.Recipient);
             var match = SendSmsLocalPartRegex.Match(localPart);
