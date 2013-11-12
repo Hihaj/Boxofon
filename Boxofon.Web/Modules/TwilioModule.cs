@@ -68,7 +68,7 @@ namespace Boxofon.Web.Modules
             
             this.RequiresHttps();
             this.RequiresWebhookAuthKey();
-            this.RequiresValidTwilioSignature();
+            //this.RequiresValidTwilioSignature();
 
             Post["/voice/incoming"] = parameters =>
             {
