@@ -161,15 +161,28 @@ namespace Boxofon.Web.Modules
             Post["/voice/voicemail"] = parameters =>
             {
                 var request = this.Bind<VoiceRequest>();
+                var userId = _twilioAccountIndex.GetBoxofonUserId(request.AccountSid);
+                if (!userId.HasValue)
+                {
+                    Logger.Error("Received a voicemail for a user that does not exist. AccountSid: '{0}' CallSid: '{1}'", request.AccountSid, request.CallSid);
+                    return HttpStatusCode.OK; // To prevent retries from Twilio - is this the best way?
+                }
+                var user = _userRepository.GetById(userId.Value);
+                if (string.IsNullOrEmpty(user.Email))
+                {
+                    Logger.Error("Received voicemail for a user that does not have an e-mail address. UserId: '{0}' CallSid: '{1}'", user.Id, request.CallSid);
+                    return HttpStatusCode.OK; // To prevent retries from Twilio - is this the best way?
+                }
                 try
                 {
                     _mailgun.SendNoReplyMessage(
-                        to: WebConfigurationManager.AppSettings["MyEmail"],
+                        to: user.Email,
                         subject: string.Format("Nytt röstmeddelande från {0}", request.From),
                         htmlBody: string.Format(@"Du har ett nytt röstmeddelande från {0}. <a href=""{1}.mp3"">Klicka här för att lyssna.</a>", request.From, request.RecordingUrl));
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Logger.ErrorException("Error sending mail.", ex);
                     // TODO Handle error (log?) - see https://github.com/ServiceStack/ServiceStack/wiki/Http-Utils#exception-handling
                 }
 
@@ -177,6 +190,40 @@ namespace Boxofon.Web.Modules
                 response.SayInSwedish("Tack för ditt samtal.");
                 response.Hangup();
                 return response.ToNancyResponse();
+            };
+
+            Post["/sms/incoming"] = parameters =>
+            {
+                var request = this.Bind<SmsRequest>();
+                var userId = _twilioAccountIndex.GetBoxofonUserId(request.AccountSid);
+                if (!userId.HasValue)
+                {
+                    Logger.Error("Received an SMS for a user that does not exist. AccountSid: '{0}' SmsSid: '{1}'", request.AccountSid, request.SmsSid);
+                    return HttpStatusCode.OK; // To prevent retries from Twilio - is this the best way?
+                }
+                var user = _userRepository.GetById(userId.Value);
+                if (string.IsNullOrEmpty(user.Email))
+                {
+                    Logger.Error("Received an SMS for a user that does not have an e-mail address. UserId: '{0}' SmsSid: '{1}'", user.Id, request.SmsSid);
+                    return HttpStatusCode.OK;
+                }
+
+                try
+                {
+                    _mailgun.SendMessage(
+                        to: user.Email,
+                        from: string.Format("{0}@{1}.boxofon.net", request.From, request.To.Replace("+", "00")),
+                        subject: string.Format("SMS från {0}", request.From),
+                        htmlBody: request.Body);
+                }
+                catch (Exception ex)
+                {
+                    Logger.ErrorException("Error sending mail.", ex);
+                    return HttpStatusCode.InternalServerError;
+                    // TODO Handle error (log?) - see https://github.com/ServiceStack/ServiceStack/wiki/Http-Utils#exception-handling
+                }
+
+                return HttpStatusCode.OK;
             };
 
             Post["/connect/deauthorize"] = parameters =>
