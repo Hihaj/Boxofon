@@ -72,10 +72,7 @@ namespace Boxofon.Web.Modules
             Get["/"] = parameters =>
             {
                 var twilio = _twilioClientFactory.GetClientForUser(this.GetCurrentUser());
-                var availableNumbers = twilio.ListAvailableLocalPhoneNumbers("SE", new AvailablePhoneNumberListRequest
-                {
-                    InRegion = Request.Query["region"]
-                });
+                var availableNumbers = twilio.ListAvailableMobilePhoneNumbers("SE", new AvailablePhoneNumberListRequest());
                 var viewModel = new ViewModels.AvailableBoxofonNumbers
                 {
                     Numbers = availableNumbers.AvailablePhoneNumbers.Select(number => new BoxofonNumber
@@ -98,11 +95,13 @@ namespace Boxofon.Web.Modules
                 }
                 var webhookAuthKey = _webhookAuthKeyGenerator.GenerateAuthKey();
                 var twilio = _twilioClientFactory.GetClientForUser(this.GetCurrentUser());
-                var result = twilio.AddIncomingLocalPhoneNumber(new PhoneNumberOptions
+                var result = twilio.AddIncomingPhoneNumber(new PhoneNumberOptions
                 {
                     PhoneNumber = phoneNumber,
-                    VoiceUrl = _urlHelper.GetAbsoluteUrl("/twilio/incoming", new Dictionary<string, string> { { "authKey", webhookAuthKey } }),
-                    VoiceMethod = "POST"
+                    VoiceUrl = _urlHelper.GetAbsoluteUrl("/twilio/voice/incoming", new Dictionary<string, string> { { "authKey", webhookAuthKey } }),
+                    VoiceMethod = "POST",
+                    SmsUrl = _urlHelper.GetAbsoluteUrl("/twilio/sms/incoming", new Dictionary<string, string> { { "authKey", webhookAuthKey } }),
+                    SmsMethod = "POST"
                 });
                 // TODO Handle REST exception in a prettier way.
                 if (result.RestException != null)

@@ -70,7 +70,7 @@ namespace Boxofon.Web.Modules
             this.RequiresWebhookAuthKey();
             this.RequiresValidTwilioSignature();
 
-            Post["/incoming"] = parameters =>
+            Post["/voice/incoming"] = parameters =>
             {
                 var request = this.Bind<VoiceRequest>();
                 var response = new TwilioResponse();
@@ -80,7 +80,7 @@ namespace Boxofon.Web.Modules
                 {
                     response.BeginGather(new
                     {
-                        action = _urlHelper.GetAbsoluteUrl("/twilio/outgoing", new Dictionary<string, string>() { { "authKey", WebConfigurationManager.AppSettings["boxofon:WebhookAuthKey"] } }),
+                        action = _urlHelper.GetAbsoluteUrl("/twilio/voice/outgoing", new Dictionary<string, string>() { { "authKey", WebConfigurationManager.AppSettings["boxofon:WebhookAuthKey"] } }),
                         method = "POST",
                         timeout = 5,
                         finishOnKey = "#"
@@ -108,7 +108,7 @@ namespace Boxofon.Web.Modules
                     response.SayInSwedish("Du ringer från ett svartlistat nummer och kommer inte kopplas fram. Om du vill kan du lämna ett meddelande efter tonen.");
                     response.Record(new
                     {
-                        action = _urlHelper.GetAbsoluteUrl("/twilio/voicemail", new Dictionary<string, string>() { { "authKey", WebConfigurationManager.AppSettings["boxofon:WebhookAuthKey"] } }),
+                        action = _urlHelper.GetAbsoluteUrl("/twilio/voice/voicemail", new Dictionary<string, string>() { { "authKey", WebConfigurationManager.AppSettings["boxofon:WebhookAuthKey"] } }),
                         method = "POST",
                         timeout = 5,
                         maxLength = 180,
@@ -123,7 +123,7 @@ namespace Boxofon.Web.Modules
                 return response.ToNancyResponse();
             };
 
-            Post["/outgoing"] = parameters =>
+            Post["/voice/outgoing"] = parameters =>
             {
                 var request = this.Bind<VoiceRequest>();
                 string numberToCall = null;
@@ -158,7 +158,7 @@ namespace Boxofon.Web.Modules
                 return response.ToNancyResponse();
             };
 
-            Post["/voicemail"] = parameters =>
+            Post["/voice/voicemail"] = parameters =>
             {
                 var request = this.Bind<VoiceRequest>();
                 try
