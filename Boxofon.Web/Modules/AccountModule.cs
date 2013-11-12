@@ -77,6 +77,7 @@ namespace Boxofon.Web.Modules
                 var user = this.GetCurrentUser();
                 var viewModel = new ViewModels.ExternalIdentities
                 {
+                    AllowUnlinkIds = user.ExternalIdentities.Count > 1,
                     GoogleIdLinked = user.ExternalIdentities.Any(id => id.ProviderName == "google"),
                     TwitterIdLinked = user.ExternalIdentities.Any(id => id.ProviderName == "twitter"),
                     FacebookIdLinked = user.ExternalIdentities.Any(id => id.ProviderName == "facebook"),
@@ -91,6 +92,11 @@ namespace Boxofon.Web.Modules
                 if (op == "delete")
                 {
                     var user = this.GetCurrentUser();
+                    if (user.ExternalIdentities.Count <= 1)
+                    {
+                        Request.AddAlertMessage("error", "Du måste ha kvar åtminstone ett inloggningssätt.");
+                        return Response.AsRedirect("/account/identities");
+                    }
                     var extId = user.ExternalIdentities.FirstOrDefault(id => id.ProviderName == (string)parameters.providerName);
                     if (extId != null)
                     {

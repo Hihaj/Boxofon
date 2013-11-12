@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Configuration;
 using Boxofon.Web.Indexes;
 using Boxofon.Web.Messages;
@@ -8,9 +9,10 @@ using TinyMessenger;
 
 namespace Boxofon.Web.Infrastructure
 {
-    public class AzureStorageExternalIdentityIndex : IExternalIdentityIndex, IRequireInitialization, ISubscriber
+    public class AzureStorageExternalIdentityIndex : IExternalIdentityIndex, IRequireInitialization, ISubscriber, IDisposable
     {
         private readonly CloudStorageAccount _storageAccount;
+        private readonly List<TinyMessageSubscriptionToken> _subscriptionTokens = new List<TinyMessageSubscriptionToken>();
 
         public AzureStorageExternalIdentityIndex()
         {
@@ -24,9 +26,17 @@ namespace Boxofon.Web.Infrastructure
 
         public void RegisterSubscriptions(ITinyMessengerHub hub)
         {
-            hub.Subscribe<UserCreated>(msg => AddExternalIdentity(msg.ExternalIdentity.ProviderName, msg.ExternalIdentity.ProviderUserId, msg.UserId));
-            hub.Subscribe<AddedExternalIdentityToUser>(msg => AddExternalIdentity(msg.ProviderName, msg.ProviderUserId, msg.UserId));
-            hub.Subscribe<RemovedExternalIdentityFromUser>(msg => RemoveExternalIdentity(msg.ProviderName, msg.ProviderUserId, msg.UserId));
+            _subscriptionTokens.Add(hub.Subscribe<UserCreated>(msg => AddExternalIdentity(msg.ExternalIdentity.ProviderName, msg.ExternalIdentity.ProviderUserId, msg.UserId)));
+            _subscriptionTokens.Add(hub.Subscribe<AddedExternalIdentityToUser>(msg => AddExternalIdentity(msg.ProviderName, msg.ProviderUserId, msg.UserId)));
+            _subscriptionTokens.Add(hub.Subscribe<RemovedExternalIdentityFromUser>(msg => RemoveExternalIdentity(msg.ProviderName, msg.ProviderUserId, msg.UserId)));
+        }
+
+        public void Dispose()
+        {
+            foreach (var token in _subscriptionTokens)
+            {
+                token.Dispose();
+            }
         }
 
         protected CloudTable Table()

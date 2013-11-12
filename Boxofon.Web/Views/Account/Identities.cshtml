@@ -9,10 +9,17 @@
         Google:
         @if (Model.GoogleIdLinked)
         {
-            <form action="/account/identities/google" method="post">
-                <input type="hidden" name="operation" value="delete"/>
-                <button type="submit">Ta bort</button>
-            </form>
+            if (Model.AllowUnlinkIds)
+            {
+                <form action="/account/identities/google" method="post">
+                    <input type="hidden" name="operation" value="delete"/>
+                    <button type="submit">Ta bort</button>
+                </form>
+            }
+            else
+            {
+                <text>Anslutet</text>
+            }
         }
         else
         {
@@ -23,10 +30,17 @@
         Twitter:
         @if (Model.TwitterIdLinked)
         {
-            <form action="/account/identities/twitter" method="post">
-                <input type="hidden" name="operation" value="delete"/>
-                <button type="submit">Ta bort</button>
-            </form>
+            if (Model.AllowUnlinkIds)
+            {
+                <form action="/account/identities/twitter" method="post">
+                    <input type="hidden" name="operation" value="delete"/>
+                    <button type="submit">Ta bort</button>
+                </form>
+            }
+            else
+            {
+                <text>Anslutet</text>
+            }
         }
         else
         {
@@ -37,10 +51,17 @@
         Facebook:
         @if (Model.FacebookIdLinked)
         {
-            <form action="/account/identities/facebook" method="post">
-                <input type="hidden" name="operation" value="delete"/>
-                <button type="submit">Ta bort</button>
-            </form>
+            if (Model.AllowUnlinkIds)
+            {
+                <form action="/account/identities/facebook" method="post">
+                    <input type="hidden" name="operation" value="delete"/>
+                    <button type="submit">Ta bort</button>
+                </form>
+            }
+            else
+            {
+                <text>Anslutet</text>
+            }
         }
         else
         {
@@ -51,10 +72,17 @@
         Windows Live:
         @if (Model.WindowsLiveIdLinked)
         {
-            <form action="/account/identities/windowslive" method="post">
-                <input type="hidden" name="operation" value="delete"/>
-                <button type="submit">Ta bort</button>
-            </form>
+            if (Model.AllowUnlinkIds)
+            {
+                <form action="/account/identities/windowslive" method="post">
+                    <input type="hidden" name="operation" value="delete"/>
+                    <button type="submit">Ta bort</button>
+                </form>
+            }
+            else
+            {
+                <text>Anslutet</text>
+            }
         }
         else
         {

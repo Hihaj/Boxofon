@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Configuration;
 using Boxofon.Web.Indexes;
 using Boxofon.Web.Messages;
@@ -8,9 +9,10 @@ using TinyMessenger;
 
 namespace Boxofon.Web.Infrastructure
 {
-    public class AzureStorageTwilioAccountIndex : ITwilioAccountIndex, IRequireInitialization, ISubscriber
+    public class AzureStorageTwilioAccountIndex : ITwilioAccountIndex, IRequireInitialization, ISubscriber, IDisposable
     {
         private readonly CloudStorageAccount _storageAccount;
+        private readonly List<TinyMessageSubscriptionToken> _subscriptionTokens = new List<TinyMessageSubscriptionToken>();
 
         public AzureStorageTwilioAccountIndex()
         {
@@ -24,8 +26,16 @@ namespace Boxofon.Web.Infrastructure
 
         public void RegisterSubscriptions(ITinyMessengerHub hub)
         {
-            hub.Subscribe<LinkedTwilioAccountToUser>(msg => AddTwilioAccount(msg.TwilioAccountSid, msg.UserId));
-            hub.Subscribe<UnlinkedTwilioAccountFromUser>(msg => RemoveTwilioAccount(msg.TwilioAccountSid, msg.UserId));
+            _subscriptionTokens.Add(hub.Subscribe<LinkedTwilioAccountToUser>(msg => AddTwilioAccount(msg.TwilioAccountSid, msg.UserId)));
+            _subscriptionTokens.Add(hub.Subscribe<UnlinkedTwilioAccountFromUser>(msg => RemoveTwilioAccount(msg.TwilioAccountSid, msg.UserId)));
+        }
+
+        public void Dispose()
+        {
+            foreach (var token in _subscriptionTokens)
+            {
+                token.Dispose();
+            }
         }
 
         protected CloudTable Table()
