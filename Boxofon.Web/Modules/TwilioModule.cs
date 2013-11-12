@@ -162,12 +162,12 @@ namespace Boxofon.Web.Modules
             {
                 var request = this.Bind<VoiceRequest>();
                 var userId = _twilioAccountIndex.GetBoxofonUserId(request.AccountSid);
-                if (!userId.HasValue)
+                User user = userId.HasValue ? _userRepository.GetById(userId.Value) : null;
+                if (user == null)
                 {
                     Logger.Error("Received a voicemail for a user that does not exist. AccountSid: '{0}' CallSid: '{1}'", request.AccountSid, request.CallSid);
                     return HttpStatusCode.OK; // To prevent retries from Twilio - is this the best way?
                 }
-                var user = _userRepository.GetById(userId.Value);
                 if (string.IsNullOrEmpty(user.Email))
                 {
                     Logger.Error("Received voicemail for a user that does not have an e-mail address. UserId: '{0}' CallSid: '{1}'", user.Id, request.CallSid);
@@ -196,12 +196,12 @@ namespace Boxofon.Web.Modules
             {
                 var request = this.Bind<SmsRequest>();
                 var userId = _twilioAccountIndex.GetBoxofonUserId(request.AccountSid);
-                if (!userId.HasValue)
+                User user = userId.HasValue ? _userRepository.GetById(userId.Value) : null;
+                if (user == null)
                 {
                     Logger.Error("Received an SMS for a user that does not exist. AccountSid: '{0}' SmsSid: '{1}'", request.AccountSid, request.SmsSid);
                     return HttpStatusCode.OK; // To prevent retries from Twilio - is this the best way?
                 }
-                var user = _userRepository.GetById(userId.Value);
                 if (string.IsNullOrEmpty(user.Email))
                 {
                     Logger.Error("Received an SMS for a user that does not have an e-mail address. UserId: '{0}' SmsSid: '{1}'", user.Id, request.SmsSid);
@@ -212,7 +212,7 @@ namespace Boxofon.Web.Modules
                 {
                     _mailgun.SendMessage(
                         to: user.Email,
-                        from: string.Format("{0} <{0}.{1}@boxofon.net>", request.From, request.To),
+                        from: string.Format("{0} <{0}.{1}@{2}>", request.From, request.To, WebConfigurationManager.AppSettings["mailgun:Domain"]),
                         subject: string.Format("SMS från {0}", request.From),
                         htmlBody: request.Body);
                 }
@@ -243,12 +243,8 @@ namespace Boxofon.Web.Modules
                     return HttpStatusCode.BadRequest;
                 }
 
-                User user = null;
                 var userId = _twilioAccountIndex.GetBoxofonUserId((string)twilioUserAccountSid);
-                if (userId.HasValue)
-                {
-                    user = _userRepository.GetById(userId.Value);
-                }
+                User user = userId.HasValue ? _userRepository.GetById(userId.Value) : null;
                 if (user == null)
                 {
                     Logger.Info("Received a Twilio Connect deauthorization request for a user that does not exist (AccountSid = '{0}').", twilioUserAccountSid);
