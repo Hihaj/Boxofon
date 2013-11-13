@@ -7,7 +7,8 @@
 - Implement support for sending sms.
 
 - Implement some form of authentication of incoming e-mails. How can we know
-  that the sender is not spoofed? SPF + DKIM?
+  that the sender is not spoofed? SPF + DKIM? Don't forget about mail aliases
+  ("sender" possibly differs from "from").
 
 - Automatically import Twilio numbers upon authorization (to allow for re-signups).
 

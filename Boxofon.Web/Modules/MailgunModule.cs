@@ -50,7 +50,7 @@ namespace Boxofon.Web.Modules
                 Logger.Debug("Request.Form[\"sender\"]: {0}", Request.Form["sender"]);
                 Logger.Debug("Request.Form.from: {0}", Request.Form.from);
                 Logger.Debug("Request.Form[\"from\"]: {0}", Request.Form["from"]);
-
+                
                 var sendSmsCommand = new MailgunRequest(Request).ToSendSmsCommand();
                 var userId = _emailAddressIndex.GetBoxofonUserId(sendSmsCommand.SenderEmail);
                 User user = userId.HasValue ? _userRepository.GetById(userId.Value) : null;
