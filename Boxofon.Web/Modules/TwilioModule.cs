@@ -76,7 +76,7 @@ namespace Boxofon.Web.Modules
                 var response = new TwilioResponse();
 
                 // Let the owner dial an arbitrary number.
-                if (request.From == WebConfigurationManager.AppSettings["MyPhoneNumber"])
+                if (request.From == WebConfigurationManager.AppSettings["MyPhoneNumber"]) // TODO Fetch phone number from account
                 {
                     response.BeginGather(new
                     {
@@ -96,7 +96,7 @@ namespace Boxofon.Web.Modules
                     try
                     {
                         _mailgun.SendNoReplyMessage(
-                            to: WebConfigurationManager.AppSettings["MyEmail"],
+                            to: WebConfigurationManager.AppSettings["MyEmail"], // TODO Fetch email from account
                             subject: string.Format("Blockerat samtal från {0}", request.From),
                             htmlBody: string.Format(@"Din Boxofon blockerade just ett samtal från <a href=""http://vemringde.se/?q={0}"">{1}</a>.", HttpUtility.UrlEncode(request.From), request.From));
                     }
@@ -119,7 +119,7 @@ namespace Boxofon.Web.Modules
                 }
 
                 // Forward call to owner.
-                response.Dial(WebConfigurationManager.AppSettings["MyPhoneNumber"]);
+                response.Dial(WebConfigurationManager.AppSettings["MyPhoneNumber"]); // TODO Fetch phone number from account
                 return response.ToNancyResponse();
             };
 
@@ -128,7 +128,7 @@ namespace Boxofon.Web.Modules
                 var request = this.Bind<VoiceRequest>();
                 string numberToCall = null;
                 var response = new TwilioResponse();
-                if (request.From == WebConfigurationManager.AppSettings["MyPhoneNumber"] &&
+                if (request.From == WebConfigurationManager.AppSettings["MyPhoneNumber"] && // TODO Fetch phone number from account
                     !string.IsNullOrEmpty(request.Digits))
                 {
                     if (request.Digits.StartsWith("00"))
