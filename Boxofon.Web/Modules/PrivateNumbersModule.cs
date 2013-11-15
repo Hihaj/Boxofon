@@ -58,7 +58,7 @@ namespace Boxofon.Web.Modules
                     Request.AddAlertMessage("error", "Det finns redan ett privat nummer angivet. Ta bort det först om du vill använda ett annat.");
                     return Response.AsRedirect("/account");
                 }
-                var phoneNumber = (string)Request.Form.PhoneNumber;
+                var phoneNumber = (string)Request.Form.phoneNumber;
                 if (string.IsNullOrEmpty(phoneNumber))
                 {
                     Request.AddAlertMessage("error", "Du måste ange ett mobilnummer.");
@@ -84,7 +84,7 @@ namespace Boxofon.Web.Modules
             {
                 var user = this.GetCurrentUser();
                 var phoneNumber = ((string)parameters.phoneNumber).ToE164();
-                var code = (string)Request.Form.Code;
+                var code = (string)Request.Form.code;
                 var verificationSucceeded = _phoneNumberVerificationService.TryCompleteVerification(user, phoneNumber, code);
                 if (!verificationSucceeded)
                 {

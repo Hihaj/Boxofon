@@ -80,7 +80,7 @@ namespace Boxofon.Web.Modules
             // TODO Make async
             Post["/"] = parameters =>
             {
-                var phoneNumber = (string)Request.Form.PhoneNumber;
+                var phoneNumber = (string)Request.Form.phoneNumber;
                 if (!phoneNumber.IsPossiblyValidPhoneNumber())
                 {
                     Request.AddAlertMessage("error", "Välj ett telefonnummer du vill köpa.");

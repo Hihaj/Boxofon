@@ -50,7 +50,7 @@ namespace Boxofon.Web.Security
                 throw new NotImplementedException("Login failure", model.Exception);
             }
             var returnUrl = model.ReturnUrl ?? "/account";
-            if (returnUrl.Contains("/authentication/redirect/"))
+            if (returnUrl.Contains("/authentication/redirect/") || returnUrl.Contains("/account/signin"))
             {
                 returnUrl = "/account";
             }

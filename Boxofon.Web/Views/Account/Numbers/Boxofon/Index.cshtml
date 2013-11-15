@@ -11,7 +11,7 @@
 {
     <form method="POST">
         @Html.AntiForgeryToken()
-        <input type="hidden" name="PhoneNumber" value="@availableNumber.PhoneNumber"/>
+        <input type="hidden" name="phoneNumber" value="@availableNumber.PhoneNumber"/>
         @availableNumber.FriendlyName
         <button type="submit">Köp för $1/månad</button>
     </form>

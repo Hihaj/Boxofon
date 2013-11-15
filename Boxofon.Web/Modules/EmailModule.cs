@@ -54,7 +54,7 @@ namespace Boxofon.Web.Modules
                     Request.AddAlertMessage("error", "Det finns redan en e-postadress angiven. Ta bort den först om du vill använda en annan.");
                     return Response.AsRedirect("/account");
                 }
-                var email = (string)Request.Form.Email;
+                var email = (string)Request.Form.email;
                 if (string.IsNullOrEmpty(email))
                 {
                     Request.AddAlertMessage("error", "Du måste ange en e-postadress.");
@@ -80,7 +80,7 @@ namespace Boxofon.Web.Modules
             {
                 var user = this.GetCurrentUser();
                 var email = ((string)parameters.emailZBase32).ZBase32Decode();
-                var code = (string)Request.Form.Code;
+                var code = (string)Request.Form.code;
                 var verificationSucceeded = _emailVerificationService.TryCompleteVerification(user.Id, email, code);
                 if (!verificationSucceeded)
                 {

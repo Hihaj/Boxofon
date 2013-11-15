@@ -78,9 +78,9 @@
     <Reference Include="Nancy.Serialization.ServiceStack">
       <HintPath>..\packages\Nancy.Serialization.ServiceStack.0.21.1\lib\net40\Nancy.Serialization.ServiceStack.dll</HintPath>
     </Reference>
-    <Reference Include="Nancy.SimpleAuthentication, Version=0.3.9.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Nancy.SimpleAuthentication, Version=0.3.9.2, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Nancy.SimpleAuthentication.0.3.9\lib\net40\Nancy.SimpleAuthentication.dll</HintPath>
+      <HintPath>..\packages\Nancy.SimpleAuthentication.0.3.9.2\lib\net40\Nancy.SimpleAuthentication.dll</HintPath>
     </Reference>
     <Reference Include="Nancy.ViewEngines.Razor, Version=0.21.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

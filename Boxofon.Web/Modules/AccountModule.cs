@@ -88,7 +88,7 @@ namespace Boxofon.Web.Modules
 
             Post["/identities/{providerName}"] = parameters =>
             {
-                var op = (string)Request.Form.Operation;
+                var op = (string)Request.Form.operation;
                 if (op == "delete")
                 {
                     var user = this.GetCurrentUser();
