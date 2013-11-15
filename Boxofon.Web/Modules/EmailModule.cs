@@ -60,7 +60,7 @@ namespace Boxofon.Web.Modules
                     Request.AddAlertMessage("error", "Du måste ange en e-postadress.");
                     return View["Index.cshtml"];
                 }
-                if (!email.IsPossiblyValidEmail())
+                if (!email.IsValidEmail())
                 {
                     Request.AddAlertMessage("error", "E-postadressen ser ut att vara ogiltig. Kontrollera att du skrivit rätt.");
                     ViewBag.Email = email;

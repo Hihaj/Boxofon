@@ -11,12 +11,6 @@ namespace Boxofon.Web.Helpers
     {
         private static readonly Regex PhoneNumberRegex = new Regex(@"^(\+)?\d+$", RegexOptions.Compiled);
 
-        // Source: http://haacked.com/archive/2007/08/21/i-knew-how-to-validate-an-email-address-until-i.aspx
-        private static readonly Regex EmailRegex = new Regex(
-            @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|" +
-            @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)" +
-            @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
         public static bool IsPossiblyValidPhoneNumber(this string phoneNumber)
         {
             if (string.IsNullOrWhiteSpace(phoneNumber))
@@ -57,9 +51,17 @@ namespace Boxofon.Web.Helpers
             return "+46" + phoneNumber;
         }
 
-        public static bool IsPossiblyValidEmail(this string email)
+        public static bool IsValidEmail(this string email)
         {
-            return !string.IsNullOrEmpty(email) && EmailRegex.IsMatch(email);
+            try
+            {
+                new System.Net.Mail.MailAddress(email);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static string ZBase32Encode(this string unencodedValue)

@@ -48,7 +48,7 @@ namespace Boxofon.Web.Infrastructure
 
         public bool TryCompleteVerification(Guid userId, string email, string code)
         {
-            if (string.IsNullOrEmpty(code) || !email.IsPossiblyValidEmail())
+            if (string.IsNullOrEmpty(code) || !email.IsValidEmail())
             {
                 return false;
             }
