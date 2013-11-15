@@ -2,3 +2,4 @@
 Disallow: /authentication/
 Disallow: /account/
 Disallow: /twilio/
+Disallow: /mailgun/
