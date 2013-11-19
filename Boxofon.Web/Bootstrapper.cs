@@ -7,6 +7,7 @@ using NLog;
 using Nancy;
 using Nancy.Authentication.Forms;
 using Nancy.Bootstrapper;
+using Nancy.Cryptography;
 using Nancy.Diagnostics;
 using Nancy.Session;
 using Nancy.TinyIoc;
@@ -21,6 +22,16 @@ namespace Boxofon.Web
         protected override DiagnosticsConfiguration DiagnosticsConfiguration
         {
             get { return new DiagnosticsConfiguration { Password = WebConfigurationManager.AppSettings["nancy:DiagnosticsPassword"] }; }
+        }
+
+        protected override void ConfigureApplicationContainer(TinyIoCContainer container)
+        {
+            base.ConfigureApplicationContainer(container);
+
+            // Cryptography components
+            container.Register<IKeyGenerator>(new PassphraseKeyGenerator(WebConfigurationManager.AppSettings["boxofon:EncryptionKeyPassphrase"], new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 }));
+            container.Register<IEncryptionProvider>(new RijndaelEncryptionProvider(container.Resolve<IKeyGenerator>()));
+            container.Register<IHmacProvider>(new DefaultHmacProvider(container.Resolve<IKeyGenerator>()));
         }
         
         protected override void ApplicationStartup(TinyIoCContainer container, IPipelines pipelines)
@@ -37,12 +48,13 @@ namespace Boxofon.Web
                 return null;
             };
 
+            // Forms authentication
             var formsAuthConfiguration = new Nancy.Authentication.Forms.FormsAuthenticationConfiguration
             {
                 RedirectUrl = "~/account/signin",
                 RequiresSSL = true,
-                UserMapper = container.Resolve<IUserMapper>()
-                // TODO Configure cryptography!
+                UserMapper = container.Resolve<IUserMapper>(),
+                CryptographyConfiguration = new CryptographyConfiguration(container.Resolve<IEncryptionProvider>(), container.Resolve<IHmacProvider>())
             };
             FormsAuthentication.Enable(pipelines, formsAuthConfiguration);
             
