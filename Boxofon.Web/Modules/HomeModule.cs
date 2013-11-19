@@ -11,8 +11,26 @@ namespace Boxofon.Web.Modules
     {
         public HomeModule()
         {
-            Get["/"] = parameters => View["Default.cshtml"];
-            Get["/account/signin"] = parameters => View["SignIn.cshtml"];
+            Get["/"] = parameters =>
+            {
+                if (this.IsAuthenticated())
+                {
+                    return Response.AsRedirect("/account");
+                }
+                return View["Default.cshtml"];
+            };
+
+            Get["/home"] = parameters => View["Default.cshtml"];
+
+            Get["/account/signin"] = parameters =>
+            {
+                if (this.IsAuthenticated())
+                {
+                    return Response.AsRedirect("/account");
+                }
+                return View["SignIn.cshtml"];
+            };
+
             Get["/account/signout"] = parameters => this.LogoutAndRedirect("~/");
         }
     }
