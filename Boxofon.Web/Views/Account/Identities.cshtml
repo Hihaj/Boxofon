@@ -4,89 +4,118 @@
 
 <h1>Inloggningssätt</h1>
 
-<ul>
-    <li>
-        Google:
+<div class="row">
+    <div class="col-xs-12">
         @if (Model.GoogleIdLinked)
         {
             if (Model.AllowUnlinkIds)
             {
                 <form action="/account/identities/google" method="post">
                     <input type="hidden" name="operation" value="delete"/>
-                    <button type="submit">Ta bort</button>
+                    <button type="submit" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-remove"></span> Google
+                    </button>
                 </form>
             }
             else
             {
-                <text>Anslutet</text>
+                <button disabled="disabled" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-remove"></span> Google
+                </button>
             }
         }
         else
         {
-            <a href="/authentication/redirect/google?returnUrl=/account/identities">Anslut</a>
+            <a href="/authentication/redirect/google?returnUrl=/account/identities" class="btn btn-default">
+                <span class="glyphicon glyphicon-plus"></span> Google
+            </a>
         }
-    </li>
-    <li>
-        Twitter:
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
         @if (Model.TwitterIdLinked)
         {
             if (Model.AllowUnlinkIds)
             {
                 <form action="/account/identities/twitter" method="post">
                     <input type="hidden" name="operation" value="delete"/>
-                    <button type="submit">Ta bort</button>
+                    <button type="submit" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-remove"></span> Twitter
+                    </button>
                 </form>
             }
             else
             {
-                <text>Anslutet</text>
+                <button disabled="disabled" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-remove"></span> Twitter
+                </button>
             }
         }
         else
         {
-            <a href="/authentication/redirect/twitter?returnUrl=/account/identities">Anslut</a>
+            <a href="/authentication/redirect/twitter?returnUrl=/account/identities" class="btn btn-default">
+                <span class="glyphicon glyphicon-plus"></span> Twitter
+            </a>
         }
-    </li>
-    <li>
-        Facebook:
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
         @if (Model.FacebookIdLinked)
         {
             if (Model.AllowUnlinkIds)
             {
                 <form action="/account/identities/facebook" method="post">
                     <input type="hidden" name="operation" value="delete"/>
-                    <button type="submit">Ta bort</button>
+                    <button type="submit" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-remove"></span> Facebook
+                    </button>
                 </form>
             }
             else
             {
-                <text>Anslutet</text>
+                <button disabled="disabled" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-remove"></span> Facebook
+                </button>
             }
         }
         else
         {
-            <a href="/authentication/redirect/facebook?returnUrl=/account/identities">Anslut</a>
+            <a href="/authentication/redirect/facebook?returnUrl=/account/identities" class="btn btn-default">
+                <span class="glyphicon glyphicon-plus"></span> Facebook
+            </a>
         }
-    </li>
-    <li>
-        Windows Live:
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
         @if (Model.WindowsLiveIdLinked)
         {
             if (Model.AllowUnlinkIds)
             {
                 <form action="/account/identities/windowslive" method="post">
                     <input type="hidden" name="operation" value="delete"/>
-                    <button type="submit">Ta bort</button>
+                    <button type="submit" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-remove"></span> Windows Live
+                    </button>
                 </form>
             }
             else
             {
-                <text>Anslutet</text>
+                <button disabled="disabled" class="btn btn-danger">
+                    <span class="glyphicon glyphicon-remove"></span> Windows Live
+                </button>
             }
         }
         else
         {
-            <a href="/authentication/redirect/windowslive?returnUrl=/account/identities">Anslut</a>
+            <a href="/authentication/redirect/windowslive?returnUrl=/account/identities" class="btn btn-default">
+                <span class="glyphicon glyphicon-plus"></span> Windows Live
+            </a>
         }
-    </li>
-</ul>
+    </div>
+</div>

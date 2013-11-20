@@ -1,0 +1,24 @@
+﻿<nav class="navbar navbar-default" role="navigation" style="margin-top: 1em;">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+        <a class="navbar-brand" href="#">Boxofon</a>
+    </div>
+
+    <ul class="nav navbar-nav navbar-right">
+        @if (RenderContext.Context.CurrentUser != null)
+        {
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Ditt konto <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="/account"><span class="glyphicon glyphicon-cog"></span> Inställningar</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/account/signout"><span class="glyphicon glyphicon-off"></span> Logga ut</a></li>
+                </ul>
+            </li>
+        }
+        else
+        {
+            <li><a href="/account"><span class="glyphicon glyphicon-lock"></span> Logga in</a></li>
+        }
+    </ul>
+</nav>

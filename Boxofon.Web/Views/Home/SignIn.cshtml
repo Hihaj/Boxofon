@@ -2,7 +2,10 @@
     Layout = "Shared/_Layout.cshtml";
 }
 
-<a href="/authentication/redirect/twitter?returnUrl=@(RenderContext.Context.Request.Query["returnUrl"])">Logga in med Twitter</a>
-<a href="/authentication/redirect/facebook?returnUrl=@(RenderContext.Context.Request.Query["returnUrl"])">Logga in med Facebook</a>
-<a href="/authentication/redirect/google?returnUrl=@(RenderContext.Context.Request.Query["returnUrl"])">Logga in med Google</a>
-<a href="/authentication/redirect/windowslive?returnUrl=@(RenderContext.Context.Request.Query["returnUrl"])">Logga in med Windows Live</a>
+Logga in med: 
+<div class="btn-group">
+    <a href="/authentication/redirect/twitter?returnUrl=@(RenderContext.Context.Request.Query["returnUrl"])" class="btn btn-default">Twitter</a>
+    <a href="/authentication/redirect/facebook?returnUrl=@(RenderContext.Context.Request.Query["returnUrl"])" class="btn btn-default">Facebook</a>
+    <a href="/authentication/redirect/google?returnUrl=@(RenderContext.Context.Request.Query["returnUrl"])" class="btn btn-default">Google</a>
+    <a href="/authentication/redirect/windowslive?returnUrl=@(RenderContext.Context.Request.Query["returnUrl"])" class="btn btn-default">Windows Live</a>
+</div>
