@@ -149,8 +149,10 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="FilePhoneNumberBlacklist.cs" />
     <Compile Include="Helpers\DictionaryExtensions.cs" />
+    <Compile Include="Helpers\ExceptionHelpers.cs" />
     <Compile Include="Helpers\HtmlHelperExtensions.cs" />
     <Compile Include="Helpers\IUrlHelper.cs" />
+    <Compile Include="Helpers\MailCommandExtensions.cs" />
     <Compile Include="Helpers\MailgunRequestExtensions.cs" />
     <Compile Include="Helpers\NancyExtensions.cs" />
     <Compile Include="Helpers\SessionExtensions.cs" />
@@ -163,6 +165,12 @@
     <Compile Include="Infrastructure\IRequireInitialization.cs" />
     <Compile Include="Infrastructure\ISubscriber.cs" />
     <Compile Include="IPhoneNumberBlacklist.cs" />
+    <Compile Include="MailCommands\Exceptions.cs" />
+    <Compile Include="MailCommands\Handlers\MailCommandHandlerBase.cs" />
+    <Compile Include="MailCommands\Handlers\SendSmsCommandHandler.cs" />
+    <Compile Include="MailCommands\IMailCommand.cs" />
+    <Compile Include="MailCommands\IMailCommandFactory.cs" />
+    <Compile Include="MailCommands\MailCommandFactory.cs" />
     <Compile Include="MailCommands\SendSms.cs" />
     <Compile Include="Mailgun\IMailgunClient.cs" />
     <Compile Include="Mailgun\MailgunClient.cs" />
@@ -172,6 +180,7 @@
     <Compile Include="Mailgun\MailgunRequest.cs" />
     <Compile Include="Mailgun\RequestValidator.cs" />
     <Compile Include="Messages\AddedEmailToUser.cs" />
+    <Compile Include="Messages\MailCommand.cs" />
     <Compile Include="Messages\RemovedEmailFromUser.cs" />
     <Compile Include="Messages\RemovedExternalIdentityFromUser.cs" />
     <Compile Include="Modules\MailgunModule.cs" />

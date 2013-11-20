@@ -4,12 +4,15 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace Boxofon.Web.Helpers
 {
     public static class StringExtensions
     {
-        private static readonly Regex PhoneNumberRegex = new Regex(@"^(\+)?\d+$", RegexOptions.Compiled);
+        private const string PhoneNumberPattern = @"\+?(\d+-)?\d+";
+        private static readonly Regex PhoneNumberRegex = new Regex("^" + PhoneNumberPattern + "$", RegexOptions.Compiled);
+        private static readonly Regex PhoneNumbersRegex = new Regex(@"(\s|,|;|^|\G)+(?<phoneNumber>" + PhoneNumberPattern + @")(\s|,|;|$)+", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
         public static bool IsPossiblyValidPhoneNumber(this string phoneNumber)
         {
@@ -49,6 +52,17 @@ namespace Boxofon.Web.Helpers
                 return "+46" + phoneNumber.Remove(0, 1);
             }
             return "+46" + phoneNumber;
+        }
+
+        public static string[] GetAllPhoneNumbers(this string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return new string[0];
+            }
+            return (from Match match in PhoneNumberRegex.Matches(text)
+                    where match.Groups["phoneNumber"].Success
+                    select match.Groups["phoneNumber"].Value.ToE164()).ToArray();
         }
 
         public static bool IsValidEmail(this string email)
