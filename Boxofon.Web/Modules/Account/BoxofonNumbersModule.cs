@@ -14,7 +14,7 @@ using Nancy.Security;
 using TinyMessenger;
 using Twilio;
 
-namespace Boxofon.Web.Modules
+namespace Boxofon.Web.Modules.Account
 {
     public class BoxofonNumbersModule : WebsiteBaseModule
     {
@@ -27,11 +27,12 @@ namespace Boxofon.Web.Modules
         private readonly ITinyMessengerHub _hub;
 
         public BoxofonNumbersModule(
-            ITwilioClientFactory twilioClientFactory, 
+            ITwilioClientFactory twilioClientFactory,
             IUrlHelper urlHelper,
             IUserRepository userRepository,
             ITwilioPhoneNumberRepository twilioPhoneNumberRepository,
-            ITinyMessengerHub hub) : base("/account/numbers/boxofon")
+            ITinyMessengerHub hub)
+            : base("/account/numbers/boxofon")
         {
             if (twilioClientFactory == null)
             {

@@ -7,7 +7,7 @@ using Nancy.Helpers;
 using Nancy.Security;
 using TinyMessenger;
 
-namespace Boxofon.Web.Modules
+namespace Boxofon.Web.Modules.Account
 {
     public class EmailModule : WebsiteBaseModule
     {
@@ -15,7 +15,11 @@ namespace Boxofon.Web.Modules
         private readonly IUserRepository _userRepository;
         private readonly ITinyMessengerHub _hub;
 
-        public EmailModule(IEmailVerificationService emailVerificationService, IUserRepository userRepository, ITinyMessengerHub hub) : base("/account/email")
+        public EmailModule(
+            IEmailVerificationService emailVerificationService, 
+            IUserRepository userRepository, 
+            ITinyMessengerHub hub)
+            : base("/account/email")
         {
             if (emailVerificationService == null)
             {

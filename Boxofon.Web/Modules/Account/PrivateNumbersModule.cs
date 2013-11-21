@@ -8,7 +8,7 @@ using Nancy.Helpers;
 using Nancy.Security;
 using TinyMessenger;
 
-namespace Boxofon.Web.Modules
+namespace Boxofon.Web.Modules.Account
 {
     public class PrivateNumbersModule : WebsiteBaseModule
     {
@@ -19,7 +19,8 @@ namespace Boxofon.Web.Modules
         public PrivateNumbersModule(
             ITinyMessengerHub hub, 
             IPhoneNumberVerificationService phoneNumberVerificationService,
-            IUserRepository userRepository) : base("/account/numbers/private")
+            IUserRepository userRepository)
+            : base("/account/numbers/private")
         {
             if (hub == null)
             {

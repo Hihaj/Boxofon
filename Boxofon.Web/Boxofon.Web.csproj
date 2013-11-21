@@ -136,7 +136,7 @@
   <ItemGroup>
     <Content Include="App_Data\blacklist.txt" />
     <Content Include="robots.txt" />
-    <Content Include="Views\Account\Overview.cshtml" />
+    <Content Include="Views\Account\Dashboard.cshtml" />
     <Content Include="Views\Account\Numbers\Private\Index.cshtml" />
     <Content Include="Views\Account\Numbers\Boxofon\Index.cshtml" />
     <Content Include="Views\Account\Numbers\Private\Verification.cshtml" />
@@ -185,6 +185,7 @@
     <Compile Include="Messages\MailCommand.cs" />
     <Compile Include="Messages\RemovedEmailFromUser.cs" />
     <Compile Include="Messages\RemovedExternalIdentityFromUser.cs" />
+    <Compile Include="Modules\Account\IdentitiesModule.cs" />
     <Compile Include="Modules\MailgunModule.cs" />
     <Compile Include="Modules\Twilio\ConnectModule.cs" />
     <Compile Include="Modules\Twilio\SmsModule.cs" />
@@ -198,9 +199,9 @@
     <Compile Include="Messages\LinkedTwilioAccountToUser.cs" />
     <Compile Include="Model\ITwilioPhoneNumberRepository.cs" />
     <Compile Include="Model\TwilioPhoneNumber.cs" />
-    <Compile Include="Modules\BoxofonNumbersModule.cs" />
-    <Compile Include="Modules\EmailModule.cs" />
-    <Compile Include="Modules\PrivateNumbersModule.cs" />
+    <Compile Include="Modules\Account\BoxofonNumbersModule.cs" />
+    <Compile Include="Modules\Account\EmailModule.cs" />
+    <Compile Include="Modules\Account\PrivateNumbersModule.cs" />
     <Compile Include="Infrastructure\AzureStorageTwilioAccountIndex.cs" />
     <Compile Include="Indexes\IExternalIdentityIndex.cs" />
     <Compile Include="Model\IUserRepository.cs" />
@@ -208,7 +209,7 @@
     <Compile Include="Infrastructure\UserMapper.cs" />
     <Compile Include="Messages\AddedExternalIdentityToUser.cs" />
     <Compile Include="Messages\UserCreated.cs" />
-    <Compile Include="Modules\AccountModule.cs" />
+    <Compile Include="Modules\Account\DashboardModule.cs" />
     <Compile Include="Modules\WebsiteBaseModule.cs" />
     <Compile Include="Modules\HomeModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

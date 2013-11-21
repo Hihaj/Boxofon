@@ -8,14 +8,17 @@ using Nancy;
 using Nancy.Security;
 using TinyMessenger;
 
-namespace Boxofon.Web.Modules
+namespace Boxofon.Web.Modules.Account
 {
-    public class AccountModule : WebsiteBaseModule
+    public class IdentitiesModule : WebsiteBaseModule
     {
         private readonly ITinyMessengerHub _hub;
         private readonly IUserRepository _userRepository;
 
-        public AccountModule(ITinyMessengerHub hub, IUserRepository userRepository) : base("/account")
+        public IdentitiesModule(
+            ITinyMessengerHub hub, 
+            IUserRepository userRepository)
+            : base("/account/identities")
         {
             if (hub == null)
             {
@@ -33,48 +36,6 @@ namespace Boxofon.Web.Modules
             Get["/"] = parameters =>
             {
                 var user = this.GetCurrentUser();
-                var viewModel = new ViewModels.AccountOverview
-                {
-                    IsTwilioAccountConnected = !string.IsNullOrEmpty(user.TwilioAccountSid),
-                    TwilioConnectAuthorizationUrl = string.Format("https://www.twilio.com/authorize/{0}", WebConfigurationManager.AppSettings["twilio:ConnectAppSid"]),
-                    TwilioAccountManagementUrl = string.IsNullOrEmpty(user.TwilioAccountSid) ? null : string.Format("https://www.twilio.com/user/account/usage/authorized-app/{0}", WebConfigurationManager.AppSettings["twilio:ConnectAppSid"]),
-                    BoxofonNumber = user.TwilioPhoneNumber,
-                    PrivatePhoneNumber = user.PrivatePhoneNumber,
-                    Email = user.Email
-                };
-                return View["Overview.cshtml", viewModel];
-            };
-
-            Get["/twilio/connect/authorize"] = parameters =>
-            {
-                var twilioAccountSid = Request.Query["AccountSid"];
-                if (Request.Query["error"] == "unauthorized_client" || string.IsNullOrEmpty(twilioAccountSid))
-                {
-                    Request.AddAlertMessage("info", "Anslutning till Twilio-konto avbröts eller misslyckades.");
-                    return Response.AsRedirect("/account");
-                }
-
-                var user = this.GetCurrentUser();
-                if (!string.IsNullOrEmpty(user.TwilioAccountSid))
-                {
-                    Request.AddAlertMessage("error", "Du har redan anslutit ett Twilio-konto.");
-                    return Response.AsRedirect("/account");
-                }
-
-                user.TwilioAccountSid = twilioAccountSid;
-                _userRepository.Save(user);
-                _hub.PublishAsync(new LinkedTwilioAccountToUser
-                {
-                    TwilioAccountSid = twilioAccountSid,
-                    UserId = user.Id
-                });
-                Request.AddAlertMessage("success", "Twilio-kontot har anslutits.");
-                return Response.AsRedirect("/account");
-            };
-
-            Get["/identities"] = parameters =>
-            {
-                var user = this.GetCurrentUser();
                 var viewModel = new ViewModels.ExternalIdentities
                 {
                     AllowUnlinkIds = user.ExternalIdentities.Count > 1,
@@ -83,10 +44,10 @@ namespace Boxofon.Web.Modules
                     FacebookIdLinked = user.ExternalIdentities.Any(id => id.ProviderName == "facebook"),
                     WindowsLiveIdLinked = user.ExternalIdentities.Any(id => id.ProviderName == "windowslive")
                 };
-                return View["Identities.cshtml", viewModel];
+                return View["Account/Identities.cshtml", viewModel];
             };
 
-            Post["/identities/{providerName}"] = parameters =>
+            Post["/{providerName}"] = parameters =>
             {
                 var op = (string)Request.Form.operation;
                 if (op == "delete")
