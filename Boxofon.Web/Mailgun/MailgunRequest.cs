@@ -13,7 +13,7 @@ namespace Boxofon.Web.Mailgun
 
         public MailgunRequest(Request request)
         {
-            From = request.Form["sender"];
+            From = request.Form["from"];
             To = request.Form["recipient"];
             Subject = request.Form["subject"];
             StrippedText = request.Form["stripped-text"];
