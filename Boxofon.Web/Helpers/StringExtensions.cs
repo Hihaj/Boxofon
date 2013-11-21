@@ -13,6 +13,7 @@ namespace Boxofon.Web.Helpers
         private const string PhoneNumberPattern = @"\+?(\d+-)?\d+";
         private static readonly Regex PhoneNumberRegex = new Regex("^" + PhoneNumberPattern + "$", RegexOptions.Compiled);
         private static readonly Regex PhoneNumbersRegex = new Regex(@"(\s|,|;|^|\G)+(?<phoneNumber>" + PhoneNumberPattern + @")(\s|,|;|$)+", RegexOptions.Compiled | RegexOptions.ExplicitCapture);
+        private static readonly Regex EmailSubjectAbbrevationRegex = new Regex(@"^((re|fw|sv|vs|antw|doorst|vl|tr|aw|wg|r|rif|i|fs|rv|res|enc|odp|pd|vb):\s*)+", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
         public static bool IsPossiblyValidPhoneNumber(this string phoneNumber)
         {
@@ -111,6 +112,11 @@ namespace Boxofon.Web.Helpers
                 return value;
             }
             return value.Substring(0, maxLength) + suffixWhenTruncated;
+        }
+
+        public static string RemoveCommonEmailSubjectAbbrevations(this string subject)
+        {
+            return string.IsNullOrEmpty(subject) ? subject : EmailSubjectAbbrevationRegex.Replace(subject, string.Empty);
         }
     }
 }
