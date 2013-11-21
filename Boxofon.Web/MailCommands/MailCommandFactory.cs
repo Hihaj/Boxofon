@@ -1,4 +1,5 @@
-﻿using Boxofon.Web.Helpers;
+﻿using System.Text.RegularExpressions;
+using Boxofon.Web.Helpers;
 using Boxofon.Web.Indexes;
 using Boxofon.Web.Mailgun;
 using Boxofon.Web.Model;
@@ -10,6 +11,7 @@ namespace Boxofon.Web.MailCommands
     public class MailCommandFactory : IMailCommandFactory
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly Regex SubjectReRegex = new Regex(@"^(re:\s*)+", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
         private readonly IEmailAddressIndex _emailAddressIndex;
         private readonly IUserRepository _userRepository;
@@ -42,10 +44,12 @@ namespace Boxofon.Web.MailCommands
                 throw new UnauthorizedMailCommandException(request.From, boxofonNumber);
             }
 
+            var normalizedSubject = SubjectReRegex.Replace(request.Subject, string.Empty).ToLowerInvariant();
+
             // TODO Parse into command in a more elegant way?
-            if (request.Subject.ToLowerInvariant().StartsWith("sms "))
+            if (normalizedSubject.StartsWith("sms "))
             {
-                var recipientPhoneNumbers = request.Subject.GetAllPhoneNumbers();
+                var recipientPhoneNumbers = normalizedSubject.GetAllPhoneNumbers();
                 if (recipientPhoneNumbers.Length == 0)
                 {
                     throw new InvalidMailCommandException("Invalid SMS mail command - recipient(s) missing.");
