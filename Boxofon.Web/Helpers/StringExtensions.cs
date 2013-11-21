@@ -97,6 +97,13 @@ namespace Boxofon.Web.Helpers
             return BitConverter.ToString(hash).Replace("-", "").ToLower();
         }
 
+        public static string HmacSha1Base64Encode(this string value, string key)
+        {
+            var sha1 = new HMACSHA1(Encoding.UTF8.GetBytes(key));
+            var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(value));
+            return Convert.ToBase64String(hash);
+        }
+
         public static string Truncate(this string value, int maxLength, string suffixWhenTruncated = "[...]")
         {
             if (string.IsNullOrEmpty(value) || value.Length <= maxLength)

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Boxofon.Web.Helpers;
 using NLog;
 using Nancy;
 
@@ -58,11 +59,7 @@ namespace Boxofon.Web.Twilio
 
             Logger.Debug(value.ToString());
 
-            var sha1 = new HMACSHA1(Encoding.UTF8.GetBytes(authToken));
-            var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(value.ToString()));
-
-            // Base64 encode the hash
-            var encoded = Convert.ToBase64String(hash);
+            var encoded = value.ToString().HmacSha1Base64Encode(authToken);
 
             // Compare your hash to ours, submitted in the X-Twilio-Signature header. If they match, then you're good to go.
             var signature = context.Request.Headers["X-Twilio-Signature"].FirstOrDefault();
