@@ -60,7 +60,7 @@ namespace Boxofon.Web.Helpers
             {
                 return new string[0];
             }
-            return (from Match match in PhoneNumberRegex.Matches(text)
+            return (from Match match in PhoneNumbersRegex.Matches(text)
                     where match.Groups["phoneNumber"].Success
                     select match.Groups["phoneNumber"].Value.ToE164()).Distinct().ToArray();
         }
