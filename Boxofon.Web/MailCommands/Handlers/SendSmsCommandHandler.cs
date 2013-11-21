@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Boxofon.Web.Helpers;
 using Boxofon.Web.Infrastructure;
 using Boxofon.Web.Model;
@@ -36,7 +37,7 @@ namespace Boxofon.Web.MailCommands.Handlers
                 Logger.Error("User does not own the Boxofon number '{0}'.", command.BoxofonNumber);
                 return;
             }
-            foreach (var recipient in command.RecipientPhoneNumbers)
+            foreach (var recipient in command.RecipientPhoneNumbers.Distinct())
             {
                 var twilio = _twilioClientFactory.GetClientForUser(user);
                 try

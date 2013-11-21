@@ -62,7 +62,7 @@ namespace Boxofon.Web.Helpers
             }
             return (from Match match in PhoneNumberRegex.Matches(text)
                     where match.Groups["phoneNumber"].Success
-                    select match.Groups["phoneNumber"].Value.ToE164()).ToArray();
+                    select match.Groups["phoneNumber"].Value.ToE164()).Distinct().ToArray();
         }
 
         public static bool IsValidEmail(this string email)
