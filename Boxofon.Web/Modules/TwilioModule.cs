@@ -212,7 +212,7 @@ namespace Boxofon.Web.Modules
                 {
                     _mailgun.SendMessage(
                         to: user.Email,
-                        from: string.Format("{0} <{0}.{1}@{2}>", request.From, request.To, WebConfigurationManager.AppSettings["mailgun:Domain"]),
+                        from: string.Format("Boxofon <{0}@{1}>", request.To, WebConfigurationManager.AppSettings["mailgun:Domain"]),
                         subject: string.Format("SMS från {0}", request.From),
                         htmlBody: request.Body);
                 }
