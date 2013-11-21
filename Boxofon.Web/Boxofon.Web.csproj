@@ -159,6 +159,7 @@
     <Compile Include="Helpers\SessionExtensions.cs" />
     <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Helpers\UrlHelper.cs" />
+    <Compile Include="Helpers\ZBase32.cs" />
     <Compile Include="Indexes\IEmailAddressIndex.cs" />
     <Compile Include="Infrastructure\AlertMessageStore.cs" />
     <Compile Include="Infrastructure\AzureStorageTwilioPhoneNumberRepository.cs" />

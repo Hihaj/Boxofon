@@ -1,4 +1,5 @@
 ﻿using System;
+using Boxofon.Web.Helpers;
 using Boxofon.Web.Mailgun;
 
 namespace Boxofon.Web.MailCommands
@@ -9,8 +10,8 @@ namespace Boxofon.Web.MailCommands
             "Invalid mail command. From: '{0}' To: '{1}' Subject (first 50 chars): '{2}' Body (first 50 chars): '{3}'", 
             request.From, 
             request.To, 
-            request.Subject.Substring(0, 50), 
-            request.StrippedText.Substring(0, 50)))
+            request.Subject.Truncate(50),
+            request.StrippedText.Truncate(50)))
         {
         }
 
