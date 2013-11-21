@@ -186,6 +186,9 @@
     <Compile Include="Messages\RemovedEmailFromUser.cs" />
     <Compile Include="Messages\RemovedExternalIdentityFromUser.cs" />
     <Compile Include="Modules\MailgunModule.cs" />
+    <Compile Include="Modules\Twilio\ConnectModule.cs" />
+    <Compile Include="Modules\Twilio\SmsModule.cs" />
+    <Compile Include="Modules\Twilio\VoiceModule.cs" />
     <Compile Include="Services\IEmailVerificationService.cs" />
     <Compile Include="Model\ExternalIdentity.cs" />
     <Compile Include="Services\IPhoneNumberVerificationService.cs" />
@@ -208,7 +211,6 @@
     <Compile Include="Modules\AccountModule.cs" />
     <Compile Include="Modules\WebsiteBaseModule.cs" />
     <Compile Include="Modules\HomeModule.cs" />
-    <Compile Include="Modules\TwilioModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\AuthenticationCallbackProvider.cs" />
     <Compile Include="Security\ModuleSecurity.cs" />

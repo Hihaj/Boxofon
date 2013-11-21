@@ -4,7 +4,6 @@ using System.Web.Configuration;
 using Boxofon.Web.Helpers;
 using Boxofon.Web.Indexes;
 using Boxofon.Web.Mailgun;
-using Boxofon.Web.Messages;
 using Boxofon.Web.Model;
 using Boxofon.Web.Security;
 using Boxofon.Web.Twilio;
@@ -13,13 +12,12 @@ using Nancy;
 using Nancy.Helpers;
 using Nancy.ModelBinding;
 using Nancy.Security;
-using TinyMessenger;
 using Twilio.Mvc;
 using Twilio.TwiML;
 
-namespace Boxofon.Web.Modules
+namespace Boxofon.Web.Modules.Twilio
 {
-    public class TwilioModule : NancyModule
+    public class VoiceModule : NancyModule
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -28,16 +26,14 @@ namespace Boxofon.Web.Modules
         private readonly IUrlHelper _urlHelper;
         private readonly IUserRepository _userRepository;
         private readonly ITwilioAccountIndex _twilioAccountIndex;
-        private readonly ITinyMessengerHub _hub;
 
-        public TwilioModule(
+        public VoiceModule(
             IPhoneNumberBlacklist phoneNumberBlacklist, 
             IMailgunClient mailgun, 
             IUrlHelper urlHelper, 
             IUserRepository userRepository, 
-            ITwilioAccountIndex twilioAccountIndex, 
-            ITinyMessengerHub hub)
-            : base("/twilio")
+            ITwilioAccountIndex twilioAccountIndex)
+            : base("/twilio/voice")
         {
             _phoneNumberBlacklist = phoneNumberBlacklist;
             if (mailgun == null)
@@ -60,17 +56,12 @@ namespace Boxofon.Web.Modules
                 throw new ArgumentNullException("twilioAccountIndex");
             }
             _twilioAccountIndex = twilioAccountIndex;
-            if (hub == null)
-            {
-                throw new ArgumentNullException("hub");
-            }
-            _hub = hub;
             
             this.RequiresHttps();
             this.RequiresWebhookAuthKey();
             //this.RequiresValidTwilioSignature();
 
-            Post["/voice/incoming"] = parameters =>
+            Post["/incoming"] = parameters =>
             {
                 var request = this.Bind<VoiceRequest>();
                 var response = new TwilioResponse();
@@ -123,7 +114,7 @@ namespace Boxofon.Web.Modules
                 return response.ToNancyResponse();
             };
 
-            Post["/voice/outgoing"] = parameters =>
+            Post["/outgoing"] = parameters =>
             {
                 var request = this.Bind<VoiceRequest>();
                 string numberToCall = null;
@@ -158,7 +149,7 @@ namespace Boxofon.Web.Modules
                 return response.ToNancyResponse();
             };
 
-            Post["/voice/voicemail"] = parameters =>
+            Post["/voicemail"] = parameters =>
             {
                 var request = this.Bind<VoiceRequest>();
                 var userId = _twilioAccountIndex.GetBoxofonUserId(request.AccountSid);
@@ -190,76 +181,6 @@ namespace Boxofon.Web.Modules
                 response.SayInSwedish("Tack för ditt samtal.");
                 response.Hangup();
                 return response.ToNancyResponse();
-            };
-
-            Post["/sms/incoming"] = parameters =>
-            {
-                var request = this.Bind<SmsRequest>();
-                var userId = _twilioAccountIndex.GetBoxofonUserId(request.AccountSid);
-                User user = userId.HasValue ? _userRepository.GetById(userId.Value) : null;
-                if (user == null)
-                {
-                    Logger.Error("Received an SMS for a user that does not exist. AccountSid: '{0}' SmsSid: '{1}'", request.AccountSid, request.SmsSid);
-                    return HttpStatusCode.OK; // To prevent retries from Twilio - is this the best way?
-                }
-                if (string.IsNullOrEmpty(user.Email))
-                {
-                    Logger.Error("Received an SMS for a user that does not have an e-mail address. UserId: '{0}' SmsSid: '{1}'", user.Id, request.SmsSid);
-                    return HttpStatusCode.OK;
-                }
-
-                try
-                {
-                    _mailgun.SendMessage(
-                        to: user.Email,
-                        from: string.Format("Boxofon <{0}@{1}>", request.To, WebConfigurationManager.AppSettings["mailgun:Domain"]),
-                        subject: string.Format("SMS från {0}", request.From),
-                        htmlBody: request.Body);
-                }
-                catch (Exception ex)
-                {
-                    Logger.ErrorException("Error sending mail.", ex);
-                    return HttpStatusCode.InternalServerError;
-                    // TODO Handle error (log?) - see https://github.com/ServiceStack/ServiceStack/wiki/Http-Utils#exception-handling
-                }
-
-                return HttpStatusCode.OK;
-            };
-
-            Post["/connect/deauthorize"] = parameters =>
-            {
-                var twilioUserAccountSid = Request.Form["AccountSid"];
-                var boxofonConnectAppSid = Request.Form["ConnectAppSid"];
-
-                if (boxofonConnectAppSid != WebConfigurationManager.AppSettings["twilio:ConnectAppSid"])
-                {
-                    Logger.Info("Received a Twilio Connect deauthorization request with the wrong ConnectAppSid ('{0}').", boxofonConnectAppSid);
-                    return HttpStatusCode.BadRequest;
-                }
-
-                if (string.IsNullOrEmpty(twilioUserAccountSid))
-                {
-                    Logger.Info("Received a Twilio Connect deauthorization request without AccountSid.");
-                    return HttpStatusCode.BadRequest;
-                }
-
-                var userId = _twilioAccountIndex.GetBoxofonUserId((string)twilioUserAccountSid);
-                User user = userId.HasValue ? _userRepository.GetById(userId.Value) : null;
-                if (user == null)
-                {
-                    Logger.Info("Received a Twilio Connect deauthorization request for a user that does not exist (AccountSid = '{0}').", twilioUserAccountSid);
-                    return HttpStatusCode.OK;
-                }
-
-                Logger.Debug("Received a Twilio Connect deauthorization request for user '{0}'.", user.Id);
-                user.TwilioAccountSid = null;
-                _userRepository.Save(user);
-                _hub.PublishAsync(new UnlinkedTwilioAccountFromUser
-                {
-                    TwilioAccountSid = (string)twilioUserAccountSid,
-                    UserId = userId.Value
-                });
-                return HttpStatusCode.OK;
             };
         }
     }
