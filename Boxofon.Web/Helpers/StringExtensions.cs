@@ -105,7 +105,7 @@ namespace Boxofon.Web.Helpers
             return Convert.ToBase64String(hash);
         }
 
-        public static string Truncate(this string value, int maxLength, string suffixWhenTruncated = "[...]")
+        public static string Truncate(this string value, int maxLength, string suffixWhenTruncated = "...")
         {
             if (string.IsNullOrEmpty(value) || value.Length <= maxLength)
             {

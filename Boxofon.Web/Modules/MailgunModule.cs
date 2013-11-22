@@ -37,6 +37,12 @@ namespace Boxofon.Web.Modules
             Post["/inbox"] = parameters =>
             {
                 var request = new MailgunRequest(Request);
+                if (!request.SentFromAuthenticatedServer)
+                {
+                    Logger.Error("Received an e-mail that did not pass DKIM and SPF validation. {0}", request);
+                    // TODO Notify the sender?
+                    return HttpStatusCode.NotAcceptable;
+                }
                 try
                 {
                     var command = _mailCommandFactory.Create(request);

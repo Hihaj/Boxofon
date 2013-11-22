@@ -1,4 +1,5 @@
 ﻿using System;
+using Boxofon.Web.Helpers;
 using Nancy;
 
 namespace Boxofon.Web.Mailgun
@@ -41,6 +42,16 @@ namespace Boxofon.Web.Mailgun
             {
                 Spf = spf;
             }
+        }
+
+        public override string ToString()
+        {
+            return string.Format(
+                "From: '{0}' To: '{1}' Subject: '{2}' Body: '{3}'",
+                From,
+                To,
+                Subject.Truncate(50, " [truncated]"),
+                StrippedText.Truncate(50, " [truncated]"));
         }
     }
 
