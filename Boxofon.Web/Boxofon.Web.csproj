@@ -187,6 +187,7 @@
     <Compile Include="Messages\RemovedExternalIdentityFromUser.cs" />
     <Compile Include="Modules\Account\IdentitiesModule.cs" />
     <Compile Include="Modules\MailgunModule.cs" />
+    <Compile Include="Modules\TestModule.cs" />
     <Compile Include="Modules\Twilio\ConnectModule.cs" />
     <Compile Include="Modules\Twilio\SmsModule.cs" />
     <Compile Include="Modules\Twilio\VoiceModule.cs" />
@@ -237,6 +238,7 @@
     <Content Include="Views\Home\SignIn.cshtml" />
     <Content Include="Views\Shared\_Authenticated.cshtml" />
     <Content Include="Views\Shared\_Navbar.cshtml" />
+    <Content Include="Views\Test.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
