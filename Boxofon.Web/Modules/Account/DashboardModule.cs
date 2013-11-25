@@ -69,12 +69,6 @@ namespace Boxofon.Web.Modules.Account
                     return Response.AsRedirect("/account");
                 }
                 user.TwilioAccountSid = twilioAccountSid;
-                _userRepository.Save(user);
-                _hub.PublishAsync(new LinkedTwilioAccountToUser
-                {
-                    TwilioAccountSid = twilioAccountSid,
-                    UserId = user.Id
-                });
 
                 // Fetch already owned Twilio numbers managed by Boxofon.
                 // TODO Handle multiple existing numbers
@@ -91,13 +85,7 @@ namespace Boxofon.Web.Modules.Account
                     if (twilioPhoneNumber != null)
                     {
                         _twilioPhoneNumberRepository.Save(twilioPhoneNumber);
-                        _hub.PublishAsync(new AllocatedTwilioPhoneNumber
-                        {
-                            PhoneNumber = twilioPhoneNumber.PhoneNumber,
-                            FriendlyName = twilioPhoneNumber.FriendlyName,
-                            TwilioAccountSid = user.TwilioAccountSid,
-                            UserId = user.Id
-                        });
+                        user.TwilioPhoneNumber = twilioPhoneNumber.PhoneNumber;
                     }
                 }
                 catch (Exception ex)
@@ -105,7 +93,13 @@ namespace Boxofon.Web.Modules.Account
                     Logger.ErrorException(string.Format("Error fetching Twilio phone numbers for user '{0}'.", user.Id), ex);
                 }
 
-                
+                _userRepository.Save(user);
+                _hub.PublishAsync(new LinkedTwilioAccountToUser
+                {
+                    TwilioAccountSid = twilioAccountSid,
+                    UserId = user.Id
+                });
+
                 Request.AddAlertMessage("success", "Twilio-kontot har anslutits.");
                 return Response.AsRedirect("/account");
             };

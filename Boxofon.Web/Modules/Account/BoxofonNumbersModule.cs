@@ -132,14 +132,6 @@ namespace Boxofon.Web.Modules.Account
                 };
                 _twilioPhoneNumberRepository.Save(twilioNumber);
 
-                _hub.PublishAsync(new AllocatedTwilioPhoneNumber
-                {
-                    PhoneNumber = result.PhoneNumber,
-                    FriendlyName = result.FriendlyName,
-                    TwilioAccountSid = result.AccountSid,
-                    UserId = user.Id
-                });
-
                 Request.AddAlertMessage("success", string.Format("Grattis! Du äger nu Boxofonnumret {0}.", result.FriendlyName));
                 return Response.AsRedirect("/account");
             };

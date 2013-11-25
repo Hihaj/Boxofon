@@ -194,7 +194,6 @@
     <Compile Include="Model\ExternalIdentity.cs" />
     <Compile Include="Services\IPhoneNumberVerificationService.cs" />
     <Compile Include="Infrastructure\PhoneNumberVerificationService.cs" />
-    <Compile Include="Messages\AllocatedTwilioPhoneNumber.cs" />
     <Compile Include="Messages\UnlinkedTwilioAccountFromUser.cs" />
     <Compile Include="Messages\LinkedTwilioAccountToUser.cs" />
     <Compile Include="Model\ITwilioPhoneNumberRepository.cs" />
