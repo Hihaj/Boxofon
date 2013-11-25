@@ -4,6 +4,8 @@ using System.Web.Configuration;
 using Boxofon.Web.Helpers;
 using Boxofon.Web.Messages;
 using Boxofon.Web.Model;
+using Boxofon.Web.Twilio;
+using NLog;
 using Nancy;
 using Nancy.Security;
 using TinyMessenger;
@@ -12,23 +14,27 @@ namespace Boxofon.Web.Modules.Account
 {
     public class DashboardModule : WebsiteBaseModule
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly ITinyMessengerHub _hub;
         private readonly IUserRepository _userRepository;
+        private readonly ITwilioClientFactory _twilioClientFactory;
+        private readonly ITwilioPhoneNumberRepository _twilioPhoneNumberRepository;
 
         public DashboardModule(
             ITinyMessengerHub hub, 
-            IUserRepository userRepository) : base("/account")
+            IUserRepository userRepository,
+            ITwilioClientFactory twilioClientFactory,
+            ITwilioPhoneNumberRepository twilioPhoneNumberRepository) : base("/account")
         {
-            if (hub == null)
-            {
-                throw new ArgumentNullException("hub");
-            }
+            hub.ThrowIfNull("hub");
+            userRepository.ThrowIfNull("userRepository");
+            twilioClientFactory.ThrowIfNull("twilioClientFactory");
+            twilioPhoneNumberRepository.ThrowIfNull("twilioPhoneNumberRepository");
             _hub = hub;
-            if (userRepository == null)
-            {
-                throw new ArgumentNullException("userRepository");
-            }
             _userRepository = userRepository;
+            _twilioClientFactory = twilioClientFactory;
+            _twilioPhoneNumberRepository = twilioPhoneNumberRepository;
 
             this.RequiresAuthentication();
 
@@ -62,7 +68,6 @@ namespace Boxofon.Web.Modules.Account
                     Request.AddAlertMessage("error", "Du har redan anslutit ett Twilio-konto.");
                     return Response.AsRedirect("/account");
                 }
-
                 user.TwilioAccountSid = twilioAccountSid;
                 _userRepository.Save(user);
                 _hub.PublishAsync(new LinkedTwilioAccountToUser
@@ -70,6 +75,37 @@ namespace Boxofon.Web.Modules.Account
                     TwilioAccountSid = twilioAccountSid,
                     UserId = user.Id
                 });
+
+                // Fetch already owned Twilio numbers managed by Boxofon.
+                // TODO Handle multiple existing numbers
+                try
+                {
+                    var twilio = _twilioClientFactory.GetClientForUser(user);
+                    var twilioPhoneNumber = twilio.ListIncomingMobilePhoneNumbers().IncomingPhoneNumbers.Select(number => new TwilioPhoneNumber
+                    {
+                        UserId = user.Id,
+                        TwilioAccountSid = user.TwilioAccountSid,
+                        PhoneNumber = number.PhoneNumber.ToE164(),
+                        FriendlyName = number.FriendlyName
+                    }).FirstOrDefault();
+                    if (twilioPhoneNumber != null)
+                    {
+                        _twilioPhoneNumberRepository.Save(twilioPhoneNumber);
+                        _hub.PublishAsync(new AllocatedTwilioPhoneNumber
+                        {
+                            PhoneNumber = twilioPhoneNumber.PhoneNumber,
+                            FriendlyName = twilioPhoneNumber.FriendlyName,
+                            TwilioAccountSid = user.TwilioAccountSid,
+                            UserId = user.Id
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.ErrorException(string.Format("Error fetching Twilio phone numbers for user '{0}'.", user.Id), ex);
+                }
+
+                
                 Request.AddAlertMessage("success", "Twilio-kontot har anslutits.");
                 return Response.AsRedirect("/account");
             };
